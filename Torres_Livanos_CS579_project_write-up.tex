@@ -9,10 +9,20 @@
 \usepackage{amsthm}  
 \usepackage{complexity}
 
-\newtheorem{theorem}{Theorem}
+\newtheorem{theorem}{\sc Theorem}
+\newtheorem{lemma}[theorem]{\sc Lemma}
+\newtheorem{prop}[theorem]{\sc Proposition}
+\newtheorem{corollary}[theorem]{\sc Corollary}
+\newtheorem{fact}[theorem]{\sc Fact}
+\newtheorem{probstate}[theorem]{\sc Problem Statement}
+\theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{\sc Remark}
+\newtheorem{claim}[theorem]{\sc Claim}
+\newtheorem{observation}[theorem]{\sc Observation}
+
 
 \usepackage{hyperref}  % used to hyperlink citations to bibliography
 \hypersetup{
@@ -30,6 +40,9 @@
 \newcommand{\xc}{\operatorname{xc}}
 \renewcommand{\R}{\mathbb{R}}
 
+\newcommand{\vnote}[1]{{\color{magenta}\noindent\textbf{V: }\marginpar{****}\textit{{#1}}}}
+\newcommand{\mnote}[1]{{\color{blue}\noindent\textbf{M: }\marginpar{****}\textit{{#1}}}}
+
 \begin{document}
 \maketitle
 
@@ -41,23 +54,32 @@ Assuming $\P \ne \NP$, any linear program (LP) for the traveling salesperson pro
 
 The problem is simply stated: find super-polynomial lower bounds for the size of any LP for $\lang{TSP}$. This seemingly daunting task motivates the following definition. 
 
-\begin{definition}
-Let $b,d$ be column vectors and let $A$, $B$, and $C$ be real matrices with $n$, $n$, and $r$ columns, respectively. Let $P = \{x \in \R^n : Ax \le b\}$ and $Q = \{(x,y) \in \R^n \times \R^r : Bx + Cy \le d\}$. We say that $Q$ is an \emph{extended formulation} (EF) of $P$ if $P = \{x : \exists y \in \R^r, (x,y) \in Q\}$. The size of $Q$, the EF of $P$, is the number of entries in $d$. That is, the size of the EF $Q$ is the number of inequalities defining $Q$. The \emph{extension complexity} of $P$, denoted $\xc(P)$, is the minimum size EF of $P$.
+\begin{definition}[Extended Formulation]
+Let $b,d$ be column vectors and let $A$, $B$, and $C$ be real matrices with $n$, $n$, and $r$ columns, respectively. Let $P = \{x \in \R^n : Ax \le b\}$ and $Q = \{(x,y) \in \R^n \times \R^r : Bx + Cy \le d\}$. We say that $Q$ is an \emph{extended formulation} (EF) of $P$ if $P = \{x : \exists y \in \R^r, (x,y) \in Q\}$. The size of $Q$, the EF of $P$, is the number of entries in $d$. That is, the size of the EF $Q$ is the number of inequalities defining $Q$. The \emph{extension complexity} of $P$, denoted by $\xc(P)$, is the minimum size EF of $P$.
 \end{definition}
 
 At a basic level, an EF of a polytope $P$ is a polytope $Q$ in a higher-dimensional space with a different set of constraints, but is in essence equivalent to $P$. It is equivalent in the sense that one can optimize over an EF $Q$ of $P$ to optimize over $P$. However, we gain nothing if $Q$ is more complex than $P$. Suppose, for instance, that $P$ is a polytope with $n$ variables and an exponential number of constraints. If there exists an EF $Q$ of $P$ with a polynomial number of variables and constraints in $n$, then it would be possible to optimize over $Q$ in polynomial time as a way of optimizing over $P$. It is not immediately evident that there should even be EFs that can save an exponential number of constraints at the expense of increasing the number of variables polynomially. We give an example in Section~(\ref{sec:utility-EF}) that shows the existence of such an EF.
 
-The notion of an EF gives a direction towards answering the question posed at the beginning of this section. In particular, if one could show that the extension complexity of the $\lang{TSP}$ polytope is exponential, then there would not exist a polynomial-size LP for $\lang{TSP}$. In Section~(\ref{sec:Yannakakis}), we will show interesting connections between extension complexity and communication complexity that will aid in proving that the extension complexity of the $\lang{TSP}$ polytope is exponential.
+The notion of an EF gives a direction towards answering the question posed at the beginning of this section. In particular, if one could show that the extension complexity of the $\lang{TSP}$ polytope is exponential, then there would not exist a polynomial-size LP for $\lang{TSP}$. More formally, we are interested in the following problem.
+
+\begin{probstate}
+Consider an instance to the Traveling Salesman Problem (TSP), where the input size, i.e. the number of cities is $n$. Let $TSP(n)$ be a polytope such that every point $x \in TSP(n)$ corresponds to a feasible solution to TSP, and vice-versa. Does there exist an extended formulation $Q$ of $TSP(n)$ of polynomial size, i.e. with a polynomial number of inequalities? In other words, is the extension complexity of $TSP(n)$ polynomial with respect to $n$?
+\end{probstate}
+
+In Section~(\ref{sec:Yannakakis}), we will show interesting connections between extension complexity and communication complexity that will aid in settling this problem statement in the negative, by showing that the extension complexity of the $\lang{TSP}$ polytope is exponential with respect to the input size.
 
 \subsection{The Utility of Extended Formulations}
 \label{sec:utility-EF}
 
 In this subsection, we give an example of an extended formulation of a particular polytope that reduces the number of constraints from exponential to polynomial and only increases the number of variables by a polynomial factor. This example was given in the lecture notes by Vondr\'ak~\cite{vondrak-class}.
 
+\begin{example}
 The permutahedron $P_{perm}^{(n)}$ is the convex hull of the permutation group on $[n]$. Formally, let 
 \[
 P_{perm}^{(n)} = \conv(\{(\pi(1), \ldots, \pi(n)) : \pi \in S_n\}) \subset \R^n,
 \]
+\vnote{What is $S_n$ here? Could not find it in Vondr\'ak's notes.}
+
 where $\conv$ denotes convex hull. Writing this polytope in terms of constraints, we have
 \begin{equation}\label{eq:perm}
 P_{perm}^{(n)} = \left\{x \in \R^n : \sum_{i=1}^n x_i = \binom{n+1}{2}; \forall S \subseteq [n], \sum_{i\in S} x_i \ge \binom{\abs{S} + 1}{2}\right\}.
@@ -75,6 +97,7 @@ The nontrivial constraints essentially ensure that every vertex on each side of 
 Q = \left\{(x,y) \in \R^n \times \R^{n \times n} : y_{ij} \ge 0, \forall i, x_i = \sum_{j=1}^n j \cdot y_{ij}; \forall i, \sum_{j=1}^n y_{ij} = 1; \forall j, \sum_{i=1}^n y_{ij} = 1\right\}.
 \]
 Then, we finally have that $P_{perm}^{(n)} = \{x \in \R^n : \exists y \in \R^{n \times n}, (x,y) \in Q\}$. It is clear that $Q$ has $n + n^2$ variables and a polynomial number of constraints. Thus, the extension complexity of the permutahedron is polynomial. 
+\end{example}
 
 \subsection{Yannakakis's Approach}
 \label{sec:Yannakakis}
@@ -88,10 +111,11 @@ Then, we finally have that $P_{perm}^{(n)} = \{x \in \R^n : \exists y \in \R^{n 
 \section{Connections to Communication Complexity}
 
 
-\section{Lower Bounds for CUT Polytope}
+\section{Lower Bounds for $CUT(n)$ Polytope}
 
+This section describes the first of the results in \cite{fiorini}, by showing that the $CUT$ polytope has exponential extension complexity. We briefly sketch the proof here, before proceeding more formally. The result essentially lies on a connection between the $CUT$ polytope and the correlation polytope, shown by \cite{de-simone}. The authors use Yannakakis's Theorem \ref{theor:factor} to relate the extension complexity with the nonnegative rank of a matrix, and then use Yannakakis's Theorem \ref{theor:commun} and De Wolf's Theorem \ref{theor:rect-cover} to lower bound it by a
 
-\section{Reductions}
+\section{$STAB(n)$ and $TSP(n)$ Polytopes}
 
 
 \section{Conclusion}
