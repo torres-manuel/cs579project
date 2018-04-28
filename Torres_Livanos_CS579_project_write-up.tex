@@ -1,0 +1,105 @@
+\documentclass{article}
+
+\title{CS 579 Project: Extension Complexity of Polytopes in Combinatorial Optimization}
+\author{Vasilis Livanos, Manuel Torres \\ Net IDs: livanos3, manuelt2}
+\date{May 2, 2018}
+
+\usepackage{amsmath, amssymb}  
+\usepackage{fullpage}  
+\usepackage{amsthm}  
+\usepackage{complexity}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{prop}[theorem]{Proposition}
+
+\usepackage{hyperref}  % used to hyperlink citations to bibliography
+\hypersetup{
+    colorlinks=true,
+    linkcolor=[rgb]{0,0,0.6},
+    citecolor=[rgb]{0,0,0.6}
+} % changes color of hyperlinks to help notify the reader of the hyperlinks
+
+\newcommand{\cetal}{\textit{et al.\@}}  % shortcut for etal to be used when no space is desired
+\newcommand{\etal}{\textit{et al.\@\ }}  % shortcut for etal to be used in regular text
+\newcommand{\nrank}{\operatorname{rank}_+}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\conv}{\operatorname{conv}}
+\newcommand{\xc}{\operatorname{xc}}
+\renewcommand{\R}{\mathbb{R}}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+Assuming $\P \ne \NP$, any linear program (LP) for the traveling salesperson problem (\lang{TSP}) must be of super-polynomial size, otherwise one could use the ellipsoid method or interior point method to solve a polynomial-size LP for $\lang{TSP}$ in polynomial time, refuting $\P \ne \NP$. It is also interesting to consider the converse of this statement: if there exists a polynomial-size LP for $\lang{TSP}$, then $\P = \NP$ as $\lang{TSP}$ is $\NP$-complete. This motivates the following question: can we write a polynomial size LP for $\lang{TSP}$? The work of Fiorini~\cetal~\cite{fiorini} attempts to resolve this question and their work is the subject of this exposition.
+
+\subsection{Problem Statement}
+
+The problem is simply stated: find super-polynomial lower bounds for the size of any LP for $\lang{TSP}$. This seemingly daunting task motivates the following definition. 
+
+\begin{definition}
+Let $b,d$ be column vectors and let $A$, $B$, and $C$ be real matrices with $n$, $n$, and $r$ columns, respectively. Let $P = \{x \in \R^n : Ax \le b\}$ and $Q = \{(x,y) \in \R^n \times \R^r : Bx + Cy \le d\}$. We say that $Q$ is an \emph{extended formulation} (EF) of $P$ if $P = \{x : \exists y \in \R^r, (x,y) \in Q\}$. The size of $Q$, the EF of $P$, is the number of entries in $d$. That is, the size of the EF $Q$ is the number of inequalities defining $Q$. The \emph{extension complexity} of $P$, denoted $\xc(P)$, is the minimum size EF of $P$.
+\end{definition}
+
+At a basic level, an EF of a polytope $P$ is a polytope $Q$ in a higher-dimensional space with a different set of constraints, but is in essence equivalent to $P$. It is equivalent in the sense that one can optimize over an EF $Q$ of $P$ to optimize over $P$. However, we gain nothing if $Q$ is more complex than $P$. Suppose, for instance, that $P$ is a polytope with $n$ variables and an exponential number of constraints. If there exists an EF $Q$ of $P$ with a polynomial number of variables and constraints in $n$, then it would be possible to optimize over $Q$ in polynomial time as a way of optimizing over $P$. It is not immediately evident that there should even be EFs that can save an exponential number of constraints at the expense of increasing the number of variables polynomially. We give an example in Section~(\ref{sec:utility-EF}) that shows the existence of such an EF.
+
+The notion of an EF gives a direction towards answering the question posed at the beginning of this section. In particular, if one could show that the extension complexity of the $\lang{TSP}$ polytope is exponential, then there would not exist a polynomial-size LP for $\lang{TSP}$. In Section~(\ref{sec:Yannakakis}), we will show interesting connections between extension complexity and communication complexity that will aid in proving that the extension complexity of the $\lang{TSP}$ polytope is exponential.
+
+\subsection{The Utility of Extended Formulations}
+\label{sec:utility-EF}
+
+In this subsection, we give an example of an extended formulation of a particular polytope that reduces the number of constraints from exponential to polynomial and only increases the number of variables by a polynomial factor. This example was given in the lecture notes by Vondr\'ak~\cite{vondrak-class}.
+
+The permutahedron $P_{perm}^{(n)}$ is the convex hull of the permutation group on $[n]$. Formally, let 
+\[
+P_{perm}^{(n)} = \conv(\{(\pi(1), \ldots, \pi(n)) : \pi \in S_n\}) \subset \R^n,
+\]
+where $\conv$ denotes convex hull. Writing this polytope in terms of constraints, we have
+\begin{equation}\label{eq:perm}
+P_{perm}^{(n)} = \left\{x \in \R^n : \sum_{i=1}^n x_i = \binom{n+1}{2}; \forall S \subseteq [n], \sum_{i\in S} x_i \ge \binom{\abs{S} + 1}{2}\right\}.
+\end{equation}
+To see that the sets are the same, consider a vertex $(x_1, \ldots, x_n)$ in $P_{perm}^{(n)}$. As $(x_1, \ldots, x_n)$ is a permutation of $[n]$, it follows that $\sum_{i=1}^n x_i = n(n+1)/2$, which is the first constraint in~(\ref{eq:perm}). Furthermore, every subset $S \subseteq \{x_1, \ldots, x_n\}$ must also sum to at least $\binom{\abs{S} + 1}{2}$, which is the other set of constraints in~(\ref{eq:perm}). These constraints hold for permutations of $[n]$ as $S$ will only be permutations of subsets of $[n]$. Note that $x_{i_1} + x_{i_2} + \cdots + x_{i_k} = \binom{k + 1}{2}$ if and only if $x_{i_1}, \ldots, x_{i_k}$ are a permutation of $[k]$. It is then clear that any convex combination of $\{(\pi(1), \ldots, \pi(n)) : \pi \in S_n\}$ also satisfies these constraints.
+
+It is clear that the number of constraints in~(\ref{eq:perm}) is exponential. There is a straightforward way to reduce this number. Let $\pi \in S_n$. Consider the matrix $Y_\pi \in \R^{n \times n}$ defined such that $Y_{ij} = 1$ if $j = \pi(i)$ and $0$ otherwise. In other words, $Y_{ij}$ is $1$ if $i$ maps to $j$ under $\pi$. This mapping can be thought of as a perfect matching between two vertex sets $V_1 = [n]$ and $V_2 = [n]$. That is, $Y_\pi$ defines a perfect matching on $K_{n,n}$, the complete bipartite graph and therefore $\conv(\{Y_\pi : \pi \in S_n\})$ is the bipartite perfect matching polytope on $K_{n,n}$. Fortunately, we know straightforward characterizations of the bipartite perfect matching polytope. 
+
+Formally, let $B_{n}$ be the bipartite perfect matching polytope on $K_{n,n}$. Then 
+\[
+B_n = \left\{ y \in \R^{n \times n} : y_{ij} \ge 0; \forall i, \sum_{j=1}^n y_{ij} = 1; \forall j, \sum_{i=1}^n y_{ij} = 1\right\}.
+\]
+The nontrivial constraints essentially ensure that every vertex on each side of the bipartition is matched to a vertex on the other side of the bipartition. Then we observe that each perfect matching directly corresponds to a permutation. Thus, we have the following extended formulation
+\[
+Q = \left\{(x,y) \in \R^n \times \R^{n \times n} : y_{ij} \ge 0, \forall i, x_i = \sum_{j=1}^n j \cdot y_{ij}; \forall i, \sum_{j=1}^n y_{ij} = 1; \forall j, \sum_{i=1}^n y_{ij} = 1\right\}.
+\]
+Then, we finally have that $P_{perm}^{(n)} = \{x \in \R^n : \exists y \in \R^{n \times n}, (x,y) \in Q\}$. It is clear that $Q$ has $n + n^2$ variables and a polynomial number of constraints. Thus, the extension complexity of the permutahedron is polynomial. 
+
+\subsection{Yannakakis's Approach}
+\label{sec:Yannakakis}
+
+\subsection{Prior Related Work}
+
+
+\section{Symmetric $\lang{TSP}$ Polytope}
+
+
+\section{Connections to Communication Complexity}
+
+
+\section{Lower Bounds for CUT Polytope}
+
+
+\section{Reductions}
+
+
+\section{Conclusion}
+
+\bibliographystyle{unsrt}
+\bibliography{refs}
+\end{document}
+
+
+
+
