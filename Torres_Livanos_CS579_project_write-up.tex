@@ -7,6 +7,7 @@
 \usepackage{amsmath, amssymb}  
 \usepackage{fullpage}  
 \usepackage{amsthm}  
+\usepackage{mathtools}  
 \usepackage{complexity}
 
 \newtheorem{theorem}{\sc Theorem}
@@ -78,7 +79,6 @@ The permutahedron $P_{perm}^{(n)}$ is the convex hull of the permutation group o
 \[
 P_{perm}^{(n)} = \conv(\{(\pi(1), \ldots, \pi(n)) : \pi \in S_n\}) \subset \R^n,
 \]
-\vnote{What is $S_n$ here? Could not find it in Vondr\'ak's notes.}
 
 where $\conv$ denotes convex hull. Writing this polytope in terms of constraints, we have
 \begin{equation}\label{eq:perm}
@@ -107,13 +107,114 @@ Then, we finally have that $P_{perm}^{(n)} = \{x \in \R^n : \exists y \in \R^{n 
 
 \section{Symmetric $\lang{TSP}$ Polytope}
 
+\begin{theorem}[Factorization Theorem]\label{theor:factor}
+\end{theorem}
 
 \section{Connections to Communication Complexity}
 
+\subsection{Thorem $4$}\label{sec:theorem4}
+
+\begin{theorem}\label{theor:suppmat}
+\end{theorem}
+
+\subsection{Rectangle Covering Bound}\label{sec:rec-cover}
+
+
+De Wolf \cite{de-wolf} showed the following theorem.
+\begin{theorem}\label{theor:dewolf}
+Every $1$-monochromatic rectangle cover of suppmat$(M)$ has size $2^{\Omega(n)}$.
+\end{theorem}
+\begin{proof}
+\end{proof}
 
 \section{Lower Bounds for $CUT(n)$ Polytope}
 
-This section describes the first of the results in \cite{fiorini}, by showing that the $CUT$ polytope has exponential extension complexity. We briefly sketch the proof here, before proceeding more formally. The result essentially lies on a connection between the $CUT$ polytope and the correlation polytope, shown by \cite{de-simone}. The authors use Yannakakis's Theorem \ref{theor:factor} to relate the extension complexity with the nonnegative rank of a matrix, and then use Yannakakis's Theorem \ref{theor:commun} and De Wolf's Theorem \ref{theor:rect-cover} to lower bound it by a
+This section describes the first of the results in \cite{fiorini}, by showing that the $CUT(n)$ polytope has exponential extension complexity. We briefly sketch the proof here, before proceeding more formally. The result essentially lies on a connection between the $CUT(n)$ polytope and the correlation polytope, shown by \cite{de-simone}. The authors use Yannakakis's Theorem \ref{theor:factor} to relate the extension complexity of the correlation polytope with the nonnegative rank of a matrix, and then use Yannakakis's Theorem \ref{theor:suppmat} and De Wolf's Theorem \ref{theor:dewolf} to lower bound it by $2^{cn}$ for some positive constant $c$, implying an exponential lower bound on the extension complexity of the $CUT(n)$ polytope.
+
+Before we proceed, we first need to provide some definitions, starting with the cut polytope $CUT(n)$.
+
+Let $K_n = (V_n, E_n)$ be the complete graph with $n$ vertices. Then, for a cut $\delta(X)$, $\chi^{\delta(X)} \in \R^{E_n}$ is a characteristic vector of the cut, where for a single edge $e$, $\chi^{\delta(X)}_e$ is defined as
+\[
+\chi^{\delta(X)}_e =
+\begin{cases}
+1 & e \in \delta(X) \\
+0 & e \notin \delta(X)
+\end{cases}
+\]
+
+\begin{definition}[Cut Polytope]\label{def:cut-poly}
+The \textit{cut polytope} $CUT(n)$ is defined as the convex hull of the characteristic vectors of all possible cuts in $K_n = (V_n, E_n)$. In other words
+\[
+CUT(n) \coloneqq conv\left( \left\{ \chi^{\delta(X)} \in \R^{E_n} \mid X \subseteq V_n \right\} \right)
+\]
+\end{definition}
+
+Next, we define the notion of \textit{linear isomorphism} of two polytopes.
+
+\begin{definition}[Linearly Isomorphic Polytopes]\label{def:lin-iso}
+Two polytopes $P \subseteq \R^n$ and $Q \subseteq \R^m$ are called \textit{linearly isomorphic} if there exists an invertible matrix $M \in \R^{n \times m}$ such that for every $x \in P$, $y = Mx \in Q$. Equivalently, for every $y \in Q$, $x = M^{-1}y \in P$.
+\end{definition}
+
+Intuitively, if two polytopes are linearly isomorphic, you can obtain one from the other by applying an invertible linear map. It also follows easily that two linearly isomorphic polytopes have the same number of vertices and facets, and any EF of one polytope can be extended to an EF of the other polytope by using the same invertible linear map. The latter is very important for our analysis, as it implies that a bound on the extension complexity of one polytope applies to any other polytope that is linearly isomorphic to it.
+
+Next, we provide a useful definition of the \textit{correlation polytope}.
+
+\begin{definition}[Correlation Polytope]\label{def:cor}
+Let $b \in {\{0, 1\}}^n$. Then $b b^T$ is a rank-$1$ binary symmetric matrix. The convex hull of all rank-$1$ binary symmetric matrices is called
+the \textit{correlation (or Boolean quadric) polytope}, and is denoted by
+\[
+COR(n) \coloneqq conv\left( \left\{ bb^T \in \R^{n \times n} \mid b \in {\{0, 1\}}^n \right\} \right)
+\]
+\end{definition}
+
+We are now ready to show the main result of this section, that provides a lower bound on the extension complexity of the $CUT(n)$ polytope.
+
+\begin{theorem}\label{theor:cut}
+There exists some constant $c > 0$ such that for all $n$,
+\[
+xc(CUT(n+1)) \geq 2^{c(n)}
+\]
+\end{theorem}
+\begin{proof}
+De Simone \cite{de-simone} showed the following Lemma, which the authors make use of and we state here without proof
+
+\begin{lemma}\label{lem:cut-cor}
+For all $n$, $COR(n)$ is linearly isomorphic to $CUT(n+1)$.
+\end{lemma}
+
+We note that, for any $a \in {\{0, 1\}}^n$, the inequality
+\begin{equation}\label{eq:cor-valid}
+\left\langle 2 \; \text{diag}(a) - aa^T, x \right\rangle \leq 1
+\end{equation}
+is satisfied by all vertices $bb^T$ of $COR(n)$, as this inequality is equivalent to ${(1 - a^Tb)}^2 \geq 0$, as seen in Section \ref{sec:rec-cover}. By convexity of $COR(n)$, we get that this inequality is satisfied by all points of $COR(n)$, and thus it is valid for $COR(n)$. Also note that these inequalities correspond to the entries of the matrix $M$ of Section \ref{sec:rec-cover}, as
+\[
+M_{ab} = 1 - \left\langle 2 \; \text{diag}(a) - aa^T, x \right\rangle
+\]
+
+Consider now any system of linear inequalities that describes $COR(n)$, and starts with the $2^n$ inequalities of \eqref{eq:cor-valid}. If we delete all but the first $2^n$ rows of any slack matrix $S$ with respect to this system of inequalities and $\{bb^T \mid b \in {\{0, 1\}}^n \}$, the resulting $2^n \times 2^n$ matrix is exactly $M$. By Theorem \ref{theor:factor}, we get that
+\begin{equation}\label{eq:cut1}
+xc(COR(n)) = rank_+(S)
+\end{equation}
+Since the nonnegative rank of a matrix is at least the nonnegative rank of any of its submatrices, we have
+\begin{equation}\label{eq:cut2}
+rank_+(S) \geq rank_+(M)
+\end{equation}
+By Theorem \ref{theor:suppmat}, $rank_+(M)$ is lower bounded by the rectangle covering bound for suppmat$(M)$, and finally, by Theorem \ref{theor:dewolf}, we have that every $1$-monochromatic rectangle cover of suppmat$(M)$ has size $2^{\Omega(n)}$. Therefore, there exists a constant $c > 0$, such that
+\begin{equation}\label{eq:cut3}
+rank_+(M) \geq 2^{cn}
+\end{equation}
+Combining Lemma \ref{lem:cut-cor} with equations \eqref{eq:cut1}, \eqref{eq:cut2} and \eqref{eq:cut3}, we get
+\[
+xc(CUT(n+1)) \geq 2^{cn}
+\]
+for some constant $c > 0$.
+\end{proof}
+
+Theorem \ref{theor:cut} immediately implies the following.
+
+\begin{corollary}\label{cor:cut}
+The extension complexity of $CUT(n)$ is $2^{\Omega(n)}$.
+\end{corollary}
 
 \section{$STAB(n)$ and $TSP(n)$ Polytopes}
 
@@ -123,7 +224,3 @@ This section describes the first of the results in \cite{fiorini}, by showing th
 \bibliographystyle{unsrt}
 \bibliography{refs}
 \end{document}
-
-
-
-

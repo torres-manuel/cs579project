@@ -1,0 +1,14 @@
+\begin{thebibliography}{1}
+
+\bibitem{fiorini}
+Samuel Fiorini, Serge Massar, Sebastian Pokutta, Hans~Raj Tiwary, and Ronald~De
+  Wolf.
+\newblock Exponential lower bounds for polytopes in combinatorial optimization.
+\newblock {\em Journal of the ACM (JACM)}, 62(2):17, 2015.
+
+\bibitem{vondrak-class}
+Jan Vondr\'ak.
+\newblock Lecture notes in polyhedral techniques in combinatorial optimization,
+  March 2017.
+
+\end{thebibliography}
