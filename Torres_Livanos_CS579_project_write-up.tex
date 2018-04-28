@@ -36,8 +36,11 @@
 \newcommand{\etal}{\textit{et al.\@\ }}  % shortcut for etal to be used in regular text
 \newcommand{\nrank}{\operatorname{rank}_+}
 \newcommand{\rank}{\operatorname{rank}}
+\newcommand{\bits}{\{0,1\}}
 \newcommand{\abs}[1]{\left|#1\right|}
 \newcommand{\conv}{\operatorname{conv}}
+\newcommand{\suppmat}{\operatorname{suppmat}}
+\newcommand{\supp}{\operatorname{supp}}
 \newcommand{\xc}{\operatorname{xc}}
 \renewcommand{\R}{\mathbb{R}}
 
@@ -112,7 +115,49 @@ Then, we finally have that $P_{perm}^{(n)} = \{x \in \R^n : \exists y \in \R^{n 
 
 \section{Connections to Communication Complexity}
 
-\subsection{Thorem $4$}\label{sec:theorem4}
+In this section, we see the connection between extension complexity and communication complexity. We first introduce some definitions in order to be able to state the connections.
+
+\begin{definition}[Rectangle Cover]
+Let $M \in \bits^{2^n \times 2^n}$. We say that $R \subseteq \bits^n \times \bits^n$ is a \emph{$b$-monochromatic rectangle} for $f$ if $M_{x,y} = b$ for all $(x,y) \in R$. We say that a set $\mathcal{R}$ of $b$-monochromatic rectangles is a \emph{$b$-rectangle cover} if $\{(x,y) : M_{x,y} = b\} \subseteq \cup_{R \in \mathcal{R}} R$.  We let $\chi(M)$ denote the minimum size monochromatic rectangle cover of $f$.
+\end{definition}
+
+Let $M$ be a matrix. We will let $\suppmat(M)$ denote the binary support matrix of $M$. That is, 
+\[
+\suppmat(M)_{ij} = \begin{cases}
+1 & \text{ if } M_{ij} \ne 0 \\
+0 & \text{ if } M_{ij} = 0
+\end{cases}.
+\]
+
+With these definitions, we can now compare the minimum size $1$-rectangle cover of $M$ with the nonnegative rank.
+
+
+\subsection{Theorem $4$}\label{sec:theorem4}
+
+\begin{theorem}
+Let $M \in \bits^{n \times n}$. Then $\rank_+(M) \ge \chi(M)$.
+\end{theorem}
+\begin{proof}
+Let $r = \nrank(M)$. It is well-known that a matrix with nonnegative rank $r$ can be written as a sum of $r$ rank-1 nonnegative matrices. Then let
+\[
+M = \sum_{i=1}^r v_iu_i^T,
+\]
+where $v_i, u_i \in \R^n$ for all $i \in [r]$ and $v_iu_i^T$ is nonnegative.
+Note that writing $M$ as a sum of $r$ rank-1 nonnegative matrices is similar to being able to write a matrix $A$ with $\rank(A) = k$ as a sum of $k$ rank-1 matrices.
+
+Let $\supp(M) = \{(x,y) \in [n] \times [n] : M_{x,y} \ne 0\}$. Then
+\[
+\supp(M) = \supp\left(\sum_{i=1}^r v_iu_i^T\right) = \bigcup_{i=1}^r \supp(v_iu_i^T), 
+\]
+where the last equality used the fact that the $v_iu_i^T$ are nonnegative matrices. Then 
+\[
+\bigcup_{i=1}^r \supp(v_iu_i^T) = \bigcup_{i=1}^r \supp(v_i) \times \supp(u_i^T) 
+\]
+as $(v_iu_i^T)_{kj} \ne 0$ if and only if $v_k \ne 0$ and $u_j \ne 0$ for all $k,j$. Note that we have shown that 
+\end{proof}
+
+It is well-known that $\log_2 \chi(f) \le C(f)$~\cite{arora-borak}. W
+
 
 \begin{theorem}\label{theor:suppmat}
 \end{theorem}
