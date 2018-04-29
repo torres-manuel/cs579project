@@ -36,6 +36,7 @@
 \newcommand{\etal}{\textit{et al.\@\ }}  % shortcut for etal to be used in regular text
 \newcommand{\nrank}{\operatorname{rank}_+}
 \newcommand{\rank}{\operatorname{rank}}
+\newcommand{\diag}{\operatorname{diag}}
 \newcommand{\bits}{\{0,1\}}
 \newcommand{\abs}[1]{\left|#1\right|}
 \newcommand{\conv}{\operatorname{conv}}
@@ -72,8 +73,7 @@ Consider an instance to the Traveling Salesman Problem (TSP), where the input si
 
 In Section~(\ref{sec:Yannakakis}), we will show interesting connections between extension complexity and communication complexity that will aid in settling this problem statement in the negative, by showing that the extension complexity of the $\lang{TSP}$ polytope is exponential with respect to the input size.
 
-\subsection{The Utility of Extended Formulations}
-\label{sec:utility-EF}
+\subsection{The Utility of Extended Formulations}\label{sec:utility-EF}
 
 In this subsection, we give an example of an extended formulation of a particular polytope that reduces the number of constraints from exponential to polynomial and only increases the number of variables by a polynomial factor. This example was given in the lecture notes by Vondr\'ak~\cite{vondrak-class}.
 
@@ -102,8 +102,7 @@ Q = \left\{(x,y) \in \R^n \times \R^{n \times n} : y_{ij} \ge 0, \forall i, x_i 
 Then, we finally have that $P_{perm}^{(n)} = \{x \in \R^n : \exists y \in \R^{n \times n}, (x,y) \in Q\}$. It is clear that $Q$ has $n + n^2$ variables and a polynomial number of constraints. Thus, the extension complexity of the permutahedron is polynomial. 
 \end{example}
 
-\subsection{Yannakakis's Approach}
-\label{sec:Yannakakis}
+\subsection{Yannakakis's Approach}\label{sec:Yannakakis}
 
 \subsection{Prior Related Work}
 
@@ -115,13 +114,17 @@ Then, we finally have that $P_{perm}^{(n)} = \{x \in \R^n : \exists y \in \R^{n 
 
 \section{Connections to Communication Complexity}
 
-In this section, we see the connection between extension complexity and communication complexity. We first introduce some definitions in order to be able to state the connections.
+Using Yannakakis's factorization theorem, we know that if the slack matrix of a given polytope $P$ has nonnegative rank at least $r$, then every EF of $P$ has size at least $r$. Said differently, if we can lower bound the nonnegative rank of the slack matrix of $P$, then this will also be a lower bound for the extension complexity of $P$. Thus, our goal now is to find an approach to lower bounding the nonnegative rank of slack matrices for particular polytopes. 
+
+\subsection{Lower Bounds for Nonnegative Rank}\label{sec:theorem4}
+
+Before we state another result of Yannakakis that aids in lower bounding the nonnegative rank of matrices, we first give some useful definitions.
 
 \begin{definition}[Rectangle Cover]
-Let $M \in \bits^{2^n \times 2^n}$. We say that $R \subseteq \bits^n \times \bits^n$ is a \emph{$b$-monochromatic rectangle} for $f$ if $M_{x,y} = b$ for all $(x,y) \in R$. We say that a set $\mathcal{R}$ of $b$-monochromatic rectangles is a \emph{$b$-rectangle cover} if $\{(x,y) : M_{x,y} = b\} \subseteq \cup_{R \in \mathcal{R}} R$.  We let $\chi(M)$ denote the minimum size monochromatic rectangle cover of $f$.
+Let $M \in \bits^{2^n \times 2^n}$ with indices corresponding to bit strings. A \emph{rectangle} is a subset of $\bits^n \times \bits^n$. We say that $R \subseteq \bits^n \times \bits^n$ is a \emph{$b$-monochromatic rectangle} for $f$ if $M_{xy} = b$ for all $(x,y) \in R$. We say that a set $\mathcal{R}$ of $b$-monochromatic rectangles is a \emph{$b$-rectangle cover} if $\{(x,y) \in \bits^n \times \bits^n : M_{xy} = b\} \subseteq \bigcup_{R \in \mathcal{R}} R$.  We let $\chi(M)$ denote the minimum cardinality monochromatic rectangle cover of $M$.
 \end{definition}
 
-Let $M$ be a matrix. We will let $\suppmat(M)$ denote the binary support matrix of $M$. That is, 
+We will let $\suppmat(M)$ denote the binary support matrix of the matrix $M$. That is, 
 \[
 \suppmat(M)_{ij} = \begin{cases}
 1 & \text{ if } M_{ij} \ne 0 \\
@@ -129,16 +132,13 @@ Let $M$ be a matrix. We will let $\suppmat(M)$ denote the binary support matrix 
 \end{cases}.
 \]
 
-With these definitions, we can now compare the minimum size $1$-rectangle cover of $M$ with the nonnegative rank.
+With these definitions, we can now compare nonnegative rank and the minimum cardinality monochromatic rectangle cover.
 
-
-\subsection{Theorem $4$}\label{sec:theorem4}
-
-\begin{theorem}
-Let $M \in \bits^{n \times n}$. Then $\rank_+(M) \ge \chi(M)$.
+\begin{theorem}\label{theor:suppmat}
+Let $M \in \R_+^{n \times n}$. Then $\rank_+(M) \ge \chi(\suppmat(M))$.
 \end{theorem}
 \begin{proof}
-Let $r = \nrank(M)$. It is well-known that a matrix with nonnegative rank $r$ can be written as a sum of $r$ rank-1 nonnegative matrices. Then let
+Let $r = \nrank(M)$. It is well-known that a matrix with nonnegative rank $r$ can be written as a sum of $r$ rank-1 nonnegative matrices. So let
 \[
 M = \sum_{i=1}^r v_iu_i^T,
 \]
@@ -153,26 +153,59 @@ where the last equality used the fact that the $v_iu_i^T$ are nonnegative matric
 \[
 \bigcup_{i=1}^r \supp(v_iu_i^T) = \bigcup_{i=1}^r \supp(v_i) \times \supp(u_i^T) 
 \]
-as $(v_iu_i^T)_{kj} \ne 0$ if and only if $v_k \ne 0$ and $u_j \ne 0$ for all $k,j$. Note that we have shown that 
+as $(v_iu_i^T)_{kj} \ne 0$ if and only if $v_k \ne 0$ and $u_j \ne 0$ for all $k,j$. Therefore, we can construct a $1$-rectangle cover for each matrix $v_iu_i^T$ by looking at the entries where $v_iu_i^T$ are nonzero. The entries where $v_iu_i^T$ are nonzero are clearly $\supp(v_i) \times \supp(u_i^T)$. As $\supp(v_i) \times \supp(u_i^T) \subset \bits^n \times \bits^n$, it follows that $\supp(v_i) \times \supp(u_i^T)$ is a valid $1$-rectangle cover for $v_iu_i^T$. Thus, the set $\{\supp(v_i) \times \supp(u_i^T) : i \in [r]\}$ is a $1$-rectangle cover for $\suppmat(M)$. This implies $\chi(\suppmat(M)) \le r$. Therefore, $\nrank(M) \ge \chi(\suppmat(M))$.
 \end{proof}
 
-It is well-known that $\log_2 \chi(f) \le C(f)$~\cite{arora-borak}. W
+This theorem tells us that if we can show that the slack matrix of a given polytope, or a submatrix of the slack matrix, has a large monochromatic covering bound, then this would imply that any EF of the polytope is also large.
 
+%As a side note, is well-known that $\chi(M) \ge \rank(M)$~\cite{arora-borak}. Thus, Theorem~(\ref{theor:suppmat}) now gives an upper bound, implying $\rank_+(M) \ge \chi(M) \ge \rank(M)$.
 
-\begin{theorem}\label{theor:suppmat}
-\end{theorem}
+\subsection{Construction of Matrix to Lower Bound Nonnegative Rank}\label{sec:rec-cover}
 
-\subsection{Rectangle Covering Bound}\label{sec:rec-cover}
+\mnote{The title of this subsection is stilted and should be fixed if possible; I want to convey that we are constructing $M$ in this subsection because that is probably the most important part about this subsection, but I don't have a succinct, precise way of stating it}
 
+As stated at the beginning of this section, it is sufficient to lower bound the nonnegative rank of the slack matrix of a given polytope to give a lower bound on the extension complexity of a polytope. Theorem~(\ref{theor:suppmat}) shows us that we can lower bound the nonnegative rank of such a slack matrix by the min-cardinality monochromatic rectangle cover of the slack matrix. However, this still leaves us in a somewhat undesirable situation: for \emph{every} polytope we want to show has large extension complexity, we have to lower bound the corresponding slack matrix.
 
-De Wolf \cite{de-wolf} showed the following theorem.
+Fortunately, Fiorini \cetal~\cite{fiorini} gave a framework for reductions in this setting, which we describe formally in Section~(\ref{sec:reduct}). For now, we remark that these reductions will proceed as follows. First, we will lower bound the nonnegative rank of one slack matrix of a particular polytope $P$, implying a bound on the extension complexity of $P$. Then we will ``reduce" other polytopes to $P$ in order show these polytopes have at least the same extension complexity as $P$. 
+
+So then we need to start by lower bounding the nonnegative rank of the slack matrix of a particular polytope. We will see in Section~(\ref{sec:cut-polytope}) that the following matrix $M$ is going to be a submatrix of the slack matrix whose nonnegative rank we want to lower bound.
+
+Let $M$ be a nonnegative, real $2^n \times 2^n$ matrix indexed by bit strings and defined as follows:
+\[
+M_{xy} = (1 - x^Ty)^2
+\]
+for all $x,y \in \bits^n$. We also note that there is an equivalent definition of $M$:
+\[
+M_{xy} = 1 - \langle 2\diag(x) - xx^T, yy^T\rangle,
+\]
+where $\diag(x)$ is the $n \times n$ diagonal matrix with $x$ on its diagonal and $\langle\cdot, \cdot\rangle$ denotes the Frobenius inner product. To verify that this is an equivalent definition of $M$, we observe that
+\begin{multline*}
+1 - \langle 2\diag(x) - xx^T, yy^T\rangle = 1- 2\langle\diag(x), yy^T\rangle + \langle xx^T, yy^T\rangle \\= 1 - 2 \sum_{i=1}^n (\diag(x)yy^T)_{ii} + \sum_{i=1}^n (xx^Tyy^T)_{ii} 
+= 1 - 2 \sum_{i=1}^n x_{i} y_{i}^2 + \sum_{i=1}^n \sum_{j=1}^n x_iy_jx_iy_j =  1 - 2 x^Ty + (x^Ty)^2.
+\end{multline*}
+
+De Wolf~\cite{de-wolf} showed the following theorem about the matrix $M$ constructed above.
 \begin{theorem}\label{theor:dewolf}
-Every $1$-monochromatic rectangle cover of suppmat$(M)$ has size $2^{\Omega(n)}$.
+Every $1$-monochromatic rectangle cover of $\suppmat(M)$ has size $2^{\Omega(n)}$.
 \end{theorem}
 \begin{proof}
+The proof critically relies on a result from~\cite{cc-nisan}. The statement is as follows: there exists sets $A, B \subseteq \bits^n \times \bits^n$ and a probability distribution $\mu$ over $\bits^n \times \bits^n$ such that 
+\begin{enumerate}\itemsep0pt
+\item $\mu(A) = 3/4$,
+\item all $(x,y) \in A$ have $x^Ty =0$ and all $(x,y) \in B$ have $x^Ty = 1$, and 
+\item there exists constants $\alpha, \delta > 0$ such that for all rectangles $R$,  $\mu(R \cap B) \ge \alpha \cdot \mu(R \cap A) - 2^{-\delta n}$.
+\end{enumerate}
+
+Now let $R_1, \ldots, R_k$ be a $1$-monochromatic rectangle cover for $\suppmat(M)$. As $M_{xy} = 1$ for all $(x,y) \in R_i$ for any $R_i$, we have that $B \cap R_i = \emptyset$ for all $R_i$. This follows since $M_{xy} = (1 - x^Ty)^2$ and $x^Ty = 1$ for all $(x,y) \in B$ by (2). Using similar reasoning, we see that $\bigcup_{i=1}^k (A \cap R_i) = A$. 
+
+So we have from (1) that $\mu(A) = 3/4$. Then since we argued that $A = \bigcup_{i=1}^k (A \cap R_i) = A$, we have $3/4 = \mu(\bigcup_{i=1}^k (A \cap R_i))$. By union bound, we have $3/4 = \mu(\bigcup_{i=1}^k (A \cap R_i)) \le \sum_{i=1}^k \mu(A \cap R_i)$. Then by (3), we obtain $3/4 \le \sum_{i=1}^k \mu(A \cap R_i) \le k\cdot 2^{-\delta n} /\alpha$. Multiplying both sides by $\alpha2^{\delta n}$, we see that $k \ge (3\alpha/4)\cdot2^{\delta n}$, which implies the claim.
 \end{proof}
 
-\section{Lower Bounds for $CUT(n)$ Polytope}
+Note that Theorem~(\ref{theor:dewolf}) essentially states that the function $f : \bits^n \times \bits^n \to \bits$ corresponding to $\suppmat(M)$ has a lower bound of $\Omega(n)$ on its communication complexity.
+
+\mnote{should we elaborate further on this connection to communication complexity? If not, there isn't much comm. complexity in this section, so maybe we should change the name of the section to something more relevant?}
+
+\section{Lower Bounds for $CUT(n)$ Polytope}\label{sec:cut-polytope}
 
 This section describes the first of the results in \cite{fiorini}, by showing that the $CUT(n)$ polytope has exponential extension complexity. We briefly sketch the proof here, before proceeding more formally. The result essentially lies on a connection between the $CUT(n)$ polytope and the correlation polytope, shown by \cite{de-simone}. The authors use Yannakakis's Theorem \ref{theor:factor} to relate the extension complexity of the correlation polytope with the nonnegative rank of a matrix, and then use Yannakakis's Theorem \ref{theor:suppmat} and De Wolf's Theorem \ref{theor:dewolf} to lower bound it by $2^{cn}$ for some positive constant $c$, implying an exponential lower bound on the extension complexity of the $CUT(n)$ polytope.
 
@@ -262,6 +295,12 @@ The extension complexity of $CUT(n)$ is $2^{\Omega(n)}$.
 \end{corollary}
 
 \section{$STAB(n)$ and $TSP(n)$ Polytopes}
+
+\subsection{Framework for Reductions}\label{sec:reduct}
+
+\subsection{Reduction from $STAB(n)$}
+
+\subsection{Reduction from $TSP(n)$}
 
 
 \section{Conclusion}
