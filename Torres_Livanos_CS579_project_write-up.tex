@@ -43,6 +43,10 @@
 \newcommand{\suppmat}{\operatorname{suppmat}}
 \newcommand{\supp}{\operatorname{supp}}
 \newcommand{\xc}{\operatorname{xc}}
+\newcommand{\TSP}{\operatorname{TSP}}
+\newcommand{\STAB}{\operatorname{STAB}}
+\newcommand{\CUT}{\operatorname{CUT}}
+\newcommand{\COR}{\operatorname{COR}}
 \renewcommand{\R}{\mathbb{R}}
 
 \newcommand{\vnote}[1]{{\color{magenta}\noindent\textbf{V: }\marginpar{****}\textit{{#1}}}}
@@ -108,6 +112,35 @@ Then, we finally have that $P_{perm}^{(n)} = \{x \in \R^n : \exists y \in \R^{n 
 
 
 \section{Symmetric $\lang{TSP}$ Polytope}
+
+\mnote{For this section, all that remains is to state and prove factorization theorem.}
+
+In Yannakakis's paper introducing the idea of extension complexity~\cite{yannakakis}, he provided an important result that allowed us to reason about extension complexity in a seemingly tractable manner. We first need a couple of definitions to state Yannakakis's result.
+
+\begin{definition}
+Let $M \in \R_+^{m \times n}$. The \emph{nonnegative rank} of $M$ is defined as $\nrank(M) = \min\{r : M = TU, T \in \R_+^{m \times r}, U \in \R_+^{r \times n}\}$.
+\end{definition}
+
+To gain intuition about the above definition, we remark that $\rank(M) \le \nrank(M)$, which follows from the fact the definition of $\rank(M)$ is the same except $T$ and $U$ are allowed to be negative. More importantly for this exposition, there is an equivalent characterization of nonnegative rank that proves useful later on. Another important fact that we will use later on is that $\nrank(M)$ is equal to the minimum $r$ such that $M$ can be written as the sum of $r$ nonnegative rank-1 matrices. Formally, we have that 
+\[
+\nrank(M) = \min\{r : M =\sum_{i=1}^r U_i, U_i \in \R_+^{m \times n}, \rank(U_i) = 1\}
+\]
+
+Next, we introduce the so-called \emph{slack matrix} of a polytope and then will show the connection between slack matrices and nonnegative rank.
+
+\begin{definition}
+Let $A \in \R^{m \times d}$, $b \in \R^m$, and $V = \{v_1, \ldots, v_n\} \subseteq \R^d$. Let $P = \{x \in \R^d : Ax \le b\} = \conv(V)$. Then $S \in \R_+^{m\times n}$ defined by $S_{ij} = b_i - A_i v_j$ with $i \in [m]$, $j \in [n]$ is the \emph{slack matrix} of $P$ with respect to $Ax \le b$ and $V$.
+\end{definition}
+
+Intuitively, the slack matrix of $P$ with respect to $Ax \le b$ and $V$ encodes how much ``slack" there is between every vertex in $V$ and a constraint. That is, $S_{ij}$ is essentially the slack between the $i^{th}$ constraint, $b_i$, and the $j^{th}$ vertex, $v_j$.
+
+We only need one more definition before we can state Yannakakis's factorization theorem. 
+
+\begin{definition}
+An \emph{extension} of $P \subseteq \R^n$ is a polytope $Q \in \R^m$ such that there is a linear map $f : \R^m \to \R^n$ such that $f(Q) = P$. We say that the \emph{size} of $Q$ is the number of faces, or facets, it has.
+\end{definition}
+
+The definition of extension is similar to that of an EF and this similarity is characterized in Theorem~(\ref{theor:factor}).
 
 \begin{theorem}[Factorization Theorem]\label{theor:factor}
 \end{theorem}
@@ -205,11 +238,11 @@ Note that Theorem~(\ref{theor:dewolf}) essentially states that the function $f :
 
 \mnote{should we elaborate further on this connection to communication complexity? If not, there isn't much comm. complexity in this section, so maybe we should change the name of the section to something more relevant?}
 
-\section{Lower Bounds for $CUT(n)$ Polytope}\label{sec:cut-polytope}
+\section{Lower Bounds for $\CUT(n)$ Polytope}\label{sec:cut-polytope}
 
-This section describes the first of the results in \cite{fiorini}, by showing that the $CUT(n)$ polytope has exponential extension complexity. We briefly sketch the proof here, before proceeding more formally. The result essentially lies on a connection between the $CUT(n)$ polytope and the correlation polytope, shown by \cite{de-simone}. The authors use Yannakakis's Theorem \ref{theor:factor} to relate the extension complexity of the correlation polytope with the nonnegative rank of a matrix, and then use Yannakakis's Theorem \ref{theor:suppmat} and De Wolf's Theorem \ref{theor:dewolf} to lower bound it by $2^{cn}$ for some positive constant $c$, implying an exponential lower bound on the extension complexity of the $CUT(n)$ polytope.
+This section describes the first of the results in \cite{fiorini}, by showing that the $\CUT(n)$ polytope has exponential extension complexity. We briefly sketch the proof here, before proceeding more formally. The result essentially lies on a connection between the $\CUT(n)$ polytope and the correlation polytope, shown by \cite{de-simone}. The authors use Yannakakis's Theorem \ref{theor:factor} to relate the extension complexity of the correlation polytope with the nonnegative rank of a matrix, and then use Yannakakis's Theorem \ref{theor:suppmat} and De Wolf's Theorem \ref{theor:dewolf} to lower bound it by $2^{cn}$ for some positive constant $c$, implying an exponential lower bound on the extension complexity of the $\CUT(n)$ polytope.
 
-Before we proceed, we first need to provide some definitions, starting with the cut polytope $CUT(n)$.
+Before we proceed, we first need to provide some definitions, starting with the cut polytope $\CUT(n)$.
 
 Let $K_n = (V_n, E_n)$ be the complete graph with $n$ vertices. Then, for a cut $\delta(X)$, $\chi^{\delta(X)} \in \R^{E_n}$ is a characteristic vector of the cut, where for a single edge $e$, $\chi^{\delta(X)}_e$ is defined as
 \[
@@ -221,9 +254,9 @@ Let $K_n = (V_n, E_n)$ be the complete graph with $n$ vertices. Then, for a cut 
 \]
 
 \begin{definition}[Cut Polytope]\label{def:cut-poly}
-The \textit{cut polytope} $CUT(n)$ is defined as the convex hull of the characteristic vectors of all possible cuts in $K_n = (V_n, E_n)$. In other words
+The \textit{cut polytope} $\CUT(n)$ is defined as the convex hull of the characteristic vectors of all possible cuts in $K_n = (V_n, E_n)$. In other words
 \[
-CUT(n) \coloneqq conv\left( \left\{ \chi^{\delta(X)} \in \R^{E_n} \mid X \subseteq V_n \right\} \right)
+\CUT(n) \coloneqq \conv\left( \left\{ \chi^{\delta(X)} \in \R^{E_n} \mid X \subseteq V_n \right\} \right)
 \]
 \end{definition}
 
@@ -241,49 +274,49 @@ Next, we provide a useful definition of the \textit{correlation polytope}.
 Let $b \in {\{0, 1\}}^n$. Then $b b^T$ is a rank-$1$ binary symmetric matrix. The convex hull of all rank-$1$ binary symmetric matrices is called
 the \textit{correlation (or Boolean quadric) polytope}, and is denoted by
 \[
-COR(n) \coloneqq conv\left( \left\{ bb^T \in \R^{n \times n} \mid b \in {\{0, 1\}}^n \right\} \right)
+COR(n) \coloneqq \conv\left( \left\{ bb^T \in \R^{n \times n} \mid b \in {\{0, 1\}}^n \right\} \right)
 \]
 \end{definition}
 
-We are now ready to show the main result of this section, that provides a lower bound on the extension complexity of the $CUT(n)$ polytope.
+We are now ready to show the main result of this section, that provides a lower bound on the extension complexity of the $\CUT(n)$ polytope.
 
 \begin{theorem}\label{theor:cut}
 There exists some constant $c > 0$ such that for all $n$,
 \[
-xc(CUT(n+1)) \geq 2^{c(n)}
+\xc(\CUT(n+1)) \geq 2^{c(n)}
 \]
 \end{theorem}
 \begin{proof}
 De Simone \cite{de-simone} showed the following Lemma, which the authors make use of and we state here without proof
 
 \begin{lemma}\label{lem:cut-cor}
-For all $n$, $COR(n)$ is linearly isomorphic to $CUT(n+1)$.
+For all $n$, $\COR(n)$ is linearly isomorphic to $\CUT(n+1)$.
 \end{lemma}
 
 We note that, for any $a \in {\{0, 1\}}^n$, the inequality
 \begin{equation}\label{eq:cor-valid}
 \left\langle 2 \; \text{diag}(a) - aa^T, x \right\rangle \leq 1
 \end{equation}
-is satisfied by all vertices $bb^T$ of $COR(n)$, as this inequality is equivalent to ${(1 - a^Tb)}^2 \geq 0$, as seen in Section \ref{sec:rec-cover}. By convexity of $COR(n)$, we get that this inequality is satisfied by all points of $COR(n)$, and thus it is valid for $COR(n)$. Also note that these inequalities correspond to the entries of the matrix $M$ of Section \ref{sec:rec-cover}, as
+is satisfied by all vertices $bb^T$ of $\COR(n)$, as this inequality is equivalent to ${(1 - a^Tb)}^2 \geq 0$, as seen in Section \ref{sec:rec-cover}. By convexity of $\COR(n)$, we get that this inequality is satisfied by all points of $\COR(n)$, and thus it is valid for $\COR(n)$. Also note that these inequalities correspond to the entries of the matrix $M$ of Section \ref{sec:rec-cover}, as
 \[
 M_{ab} = 1 - \left\langle 2 \; \text{diag}(a) - aa^T, x \right\rangle
 \]
 
-Consider now any system of linear inequalities that describes $COR(n)$, and starts with the $2^n$ inequalities of \eqref{eq:cor-valid}. If we delete all but the first $2^n$ rows of any slack matrix $S$ with respect to this system of inequalities and $\{bb^T \mid b \in {\{0, 1\}}^n \}$, the resulting $2^n \times 2^n$ matrix is exactly $M$. By Theorem \ref{theor:factor}, we get that
+Consider now any system of linear inequalities that describes $\COR(n)$, and starts with the $2^n$ inequalities of \eqref{eq:cor-valid}. If we delete all but the first $2^n$ rows of any slack matrix $S$ with respect to this system of inequalities and $\{bb^T \mid b \in {\{0, 1\}}^n \}$, the resulting $2^n \times 2^n$ matrix is exactly $M$. By Theorem \ref{theor:factor}, we get that
 \begin{equation}\label{eq:cut1}
-xc(COR(n)) = rank_+(S)
+\xc(\COR(n)) = \nrank(S)
 \end{equation}
 Since the nonnegative rank of a matrix is at least the nonnegative rank of any of its submatrices, we have
 \begin{equation}\label{eq:cut2}
-rank_+(S) \geq rank_+(M)
+\nrank(S) \geq \nrank(M)
 \end{equation}
-By Theorem \ref{theor:suppmat}, $rank_+(M)$ is lower bounded by the rectangle covering bound for suppmat$(M)$, and finally, by Theorem \ref{theor:dewolf}, we have that every $1$-monochromatic rectangle cover of suppmat$(M)$ has size $2^{\Omega(n)}$. Therefore, there exists a constant $c > 0$, such that
+By Theorem \ref{theor:suppmat}, $\nrank(M)$ is lower bounded by the rectangle covering bound for $\suppmat(M)$, and finally, by Theorem \ref{theor:dewolf}, we have that every $1$-monochromatic rectangle cover of $\suppmat(M)$ has size $2^{\Omega(n)}$. Therefore, there exists a constant $c > 0$, such that
 \begin{equation}\label{eq:cut3}
-rank_+(M) \geq 2^{cn}
+\nrank(M) \geq 2^{cn}
 \end{equation}
 Combining Lemma \ref{lem:cut-cor} with equations \eqref{eq:cut1}, \eqref{eq:cut2} and \eqref{eq:cut3}, we get
 \[
-xc(CUT(n+1)) \geq 2^{cn}
+\xc(\CUT(n+1)) \geq 2^{cn}
 \]
 for some constant $c > 0$.
 \end{proof}
@@ -291,16 +324,37 @@ for some constant $c > 0$.
 Theorem \ref{theor:cut} immediately implies the following.
 
 \begin{corollary}\label{cor:cut}
-The extension complexity of $CUT(n)$ is $2^{\Omega(n)}$.
+The extension complexity of $\CUT(n)$ is $2^{\Omega(n)}$.
 \end{corollary}
 
-\section{$STAB(n)$ and $TSP(n)$ Polytopes}
+\section{$\STAB(n)$ and $\TSP(n)$ Polytopes}
+
+It was made clear in the proof of Theorem~(\ref{theor:cut}) that the extension complexity of $\COR(n)$ is the same as the extension complexity of $\CUT(n+1)$. Thus, as we lower bounded the extension complexity of $\CUT(n+1)$ by $2^{\Omega(n)}$, we also have $\xc(\COR(n)) = 2^{\Omega(n)}$. As we noted in Section~(\ref{sec:rec-cover}), we now want to use the fact that $\xc(\COR(n)) = 2^{\Omega(n)}$ and ``reduce" other polytopes $Q$ to $\COR(n)$ to show that $\xc(Q) = 2^{\Omega(n)}$.
 
 \subsection{Framework for Reductions}\label{sec:reduct}
 
-\subsection{Reduction from $STAB(n)$}
+We therefore want to formalize what is meant by a reduction in this context.
 
-\subsection{Reduction from $TSP(n)$}
+\begin{lemma}\label{lem:reduct}
+Let $P$, $Q$, and $F$ be polytopes. Then
+\begin{enumerate} \itemsep0pt
+\item if $F$ is an extension of $P$, then $\xc(F) \ge \xc(P)$;
+\item if $F$ is a face of $Q$, then $\xc(Q) \ge \xc(F)$.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+We first prove (1). Recall that $\xc(F)$ is the minimum size EF of $F$. Then suppose that $F'$ is the EF attaining this minimum. As $F'$ is an EF for $F$ and $F$ is an extension of $P$, it follows that $F'$ is an EF of $P$. Therefore, $\xc(F) \ge \xc(P)$. 
+
+Next, we prove (2). Let $S_Q$ be the slack matrix of $Q$ and let $Q = \conv(\{v_1, \ldots, v_k\})$. Further, let $S_F$ be the slack matrix of $F$. Recall that the rows of the slack matrix $S_Q$ correspond to constraints and the columns correspond to vertices of the polytope $Q$, which are $v_1, \ldots, v_k$. Since $F$ is a face of $Q$, there exists a subset $V' \subseteq \{v_1, \ldots, v_k\}$ such that the vertices of $V'$ correspond to the columns of $S_F$. Thus, by Theorem~(\ref{theor:factor}), $\xc(Q) = \nrank(S_Q) \ge \nrank(S_F) = \xc(F)$.
+\end{proof}
+
+Thus, Lemma~(\ref{lem:reduct}) gives an idea of how to do the reductions we have been alluding to: show that $\COR(n)$ is the face of a polytope $P$ and then $\xc(P) \ge \xc(\COR(n)) =2^{\Omega(n)}$.
+
+
+\subsection{Reduction from $\STAB(n)$}
+
+
+\subsection{Reduction from $\TSP(n)$}
 
 
 \section{Conclusion}
