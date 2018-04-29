@@ -42,6 +42,9 @@
 \newcommand{\conv}{\operatorname{conv}}
 \newcommand{\suppmat}{\operatorname{suppmat}}
 \newcommand{\supp}{\operatorname{supp}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\ul}[1]{\underline{#1}}
+\newcommand{\oul}[1]{\overline{\underline{#1}}}
 \newcommand{\xc}{\operatorname{xc}}
 \newcommand{\TSP}{\operatorname{TSP}}
 \newcommand{\STAB}{\operatorname{STAB}}
@@ -117,7 +120,7 @@ Then, we finally have that $P_{perm}^{(n)} = \{x \in \R^n : \exists y \in \R^{n 
 
 In Yannakakis's paper introducing the idea of extension complexity~\cite{yannakakis}, he provided an important result that allowed us to reason about extension complexity in a seemingly tractable manner. We first need a couple of definitions to state Yannakakis's result.
 
-\begin{definition}
+\begin{definition}[Nonnegative Rank]
 Let $M \in \R_+^{m \times n}$. The \emph{nonnegative rank} of $M$ is defined as $\nrank(M) = \min\{r : M = TU, T \in \R_+^{m \times r}, U \in \R_+^{r \times n}\}$.
 \end{definition}
 
@@ -128,7 +131,7 @@ To gain intuition about the above definition, we remark that $\rank(M) \le \nran
 
 Next, we introduce the so-called \emph{slack matrix} of a polytope and then will show the connection between slack matrices and nonnegative rank.
 
-\begin{definition}
+\begin{definition}[Slack Matrix]
 Let $A \in \R^{m \times d}$, $b \in \R^m$, and $V = \{v_1, \ldots, v_n\} \subseteq \R^d$. Let $P = \{x \in \R^d : Ax \le b\} = \conv(V)$. Then $S \in \R_+^{m\times n}$ defined by $S_{ij} = b_i - A_i v_j$ with $i \in [m]$, $j \in [n]$ is the \emph{slack matrix} of $P$ with respect to $Ax \le b$ and $V$.
 \end{definition}
 
@@ -136,7 +139,7 @@ Intuitively, the slack matrix of $P$ with respect to $Ax \le b$ and $V$ encodes 
 
 We only need one more definition before we can state Yannakakis's factorization theorem. 
 
-\begin{definition}
+\begin{definition}[Extension]
 An \emph{extension} of $P \subseteq \R^n$ is a polytope $Q \in \R^m$ such that there is a linear map $f : \R^m \to \R^n$ such that $f(Q) = P$. We say that the \emph{size} of $Q$ is the number of faces, or facets, it has.
 \end{definition}
 
@@ -329,7 +332,7 @@ The extension complexity of $\CUT(n)$ is $2^{\Omega(n)}$.
 
 \section{$\STAB(n)$ and $\TSP(n)$ Polytopes}
 
-It was made clear in the proof of Theorem~(\ref{theor:cut}) that the extension complexity of $\COR(n)$ is the same as the extension complexity of $\CUT(n+1)$. Thus, as we lower bounded the extension complexity of $\CUT(n+1)$ by $2^{\Omega(n)}$, we also have $\xc(\COR(n)) = 2^{\Omega(n)}$. As we noted in Section~(\ref{sec:rec-cover}), we now want to use the fact that $\xc(\COR(n)) = 2^{\Omega(n)}$ and ``reduce" other polytopes $Q$ to $\COR(n)$ to show that $\xc(Q) = 2^{\Omega(n)}$.
+It was made clear in the proof of Theorem~(\ref{theor:cut}) that the extension complexity of $\COR(n)$ is the same as the extension complexity of $\CUT(n+1)$. Thus, as we lower bounded the extension complexity of $\CUT(n+1)$ by $2^{\Omega(n)}$, we also have $\xc(\COR(n)) = 2^{\Omega(n)}$. As we noted in Section~(\ref{sec:rec-cover}), we now want to use the fact that $\xc(\COR(n)) = 2^{\Omega(n)}$ and ``reduce" other polytopes $Q$ to $\COR(n)$ to give a lower bound on $\xc(Q)$.
 
 \subsection{Framework for Reductions}\label{sec:reduct}
 
@@ -353,6 +356,62 @@ Thus, Lemma~(\ref{lem:reduct}) gives an idea of how to do the reductions we have
 
 \subsection{Reduction from $\STAB(n)$}
 
+In this subsection, we will see the result of Fiorini~\cetal~\cite{fiorini} showing that the extension complexity of the stable set polytope is exponential. This result is a great example of the reductions introduced in the previous section work. There are two results in the subsection, but most of the work is in the first result showing that there exists a graph such that the stable set polytope corresponding to this graph contains a face that is an extension of $\COR(n)$. 
+
+Before we proceed with the results, we first need some definitions. First, when we refer to a stable set of a graph $G = (V,E)$, we are referring to an independent set. For a subset $S \subseteq V$, let $\chi^S \in \R^V$ denote the characteristic vector of $S$. That is, $\chi_v^S = 1$ if $v \in S$ and $\chi_v^S = 0$ otherwise. 
+
+\begin{definition}[Stable Set Polytope]
+The \emph{stable set polytope} $\STAB(G)$ is defined as the convex hull of the characteristic vectors of all stable sets in $G = (V, E)$. That is,
+\[
+\STAB(G) \coloneqq \conv\left(\left\{\chi^S \in \R^V | S \text{ is a stable set of $G$}\right\}\right).
+\]
+\end{definition}
+
+We are now ready to show the main result of this section.
+
+\begin{lemma}\label{lem:stab-reduct}
+For every $n$, there exists a graph $H_n$ with $O(n^2)$ vertices such that $\STAB(H_n)$ contains a face that is an extension of $\COR(n)$.
+\end{lemma}
+\begin{proof}
+Here is an outline of the proof: we first construct $H_n$, then we designate the face $F$ of $\STAB(H_n)$ that will be an extension of $\COR(n)$, and finally we give the map $\pi$ showing that $F$ is indeed an extension of $\COR(n)$.
+
+First, we construct $H_n$. To do so, let $K_n$ be the complete graph on the vertices $[n]$. For an edge $ij$ in $K_n$ where $i < j$, label the edge $ij$. Now to construct $H_n$. The vertex set of $H_n$ is
+\[
+V = \{ii, \ol{ii} : i \in [n]\} \cup \{ij, \ol{ij}, \ul{ij}, \oul{ij}, : i,j \in [n], i < j\}.
+\]
+That is, we add two vertices labeled $ii$ and $\ol{ii}$ for every vertex $i$ in $K_n$. Also, we add four vertices labeled $ij, \ol{ij}, \ul{ij}, \oul{ij}$ for every edge label in $K_n$. It is thus easy to see that the number of vertices added is proportional to the number of vertices in $K_n$, which is $O(n^2)$. As for the edges of $H_n$, we add an edge between $ii$ and $\ol{ii}$ for every $i$ and we make a clique out of $ij, \ol{ij}, \ul{ij}, \oul{ij}$ for every edge label in $K_n$. Finally, we add the following edges to $H_n$ for every edge label in $K_n$:
+\begin{align*}
+&\{ij, \ol{ii}\}, \{ij, \ol{jj}\}, \{\ol{ij}, ii\}, \{\ol{ij}, \ol{jj}\},\\
+&\{\ul{ij}, \ol{ii}\}, \{\ul{ij}, jj\}, \{\oul{ij}, ii\}, \{\oul{ij}, jj\}.
+\end{align*}
+Fiorini~\cetal~\cite{fiorini} provide a useful figure for their construction, which we include in Figure~(\ref{fig:stab-construct}). This completes the construction of $H_n$.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.4]{stable.pdf}
+\caption{The set of edges and vertices added to $H_n$ for some $i,j \in [n]$ with $i < j$.}
+\label{fig:stab-construct}
+\end{figure}
+
+Next, we designate the face $F$ of $\STAB(H_n)$ that will be an extension of $\COR(n)$. Note that in the construction, every vertex $i$ in $K_n$ has two vertices associated with it: $ii$ and $\ol{ii}$. These vertices form a clique in $H_n$. We will call these \emph{vertex cliques}. Also, every edge label $ij$ in $K_n$ has four vertices associated with it: $ij, \ol{ij}, \ul{ij}, \oul{ij}$. These vertices form a clique in $H_n$. We will call these \emph{edge cliques}. Then we let $F$ be the face of $\STAB(H_n)$ whose vertices correspond to the stable sets containing exactly one vertex in each vertex-clique and each edge clique. 
+
+Next, we are ready to propose a linear map that will prove that $F$ is in fact an extension of $\COR(n)$. Let $\pi : \R^{V(H_n)} \to \R^{n\times n}$ be defined such that $\pi(x)$ maps to $y \in \R^{n \times n}$ where $y_{ij} = y_{ji} = x_{ij}$ for $i \le j$. We claim that $\pi(F) = \COR(n)$, which would imply that $F$ is an extension of $\COR(n)$.
+
+We start by showing $\pi(F) \subseteq \COR(n)$. Let $\chi^S \in F$. Then let $b \in \bits^n$ such that $b_i = 1$ if $ii \in S$ and $b_i = 0$ if $\ol{ii} \in S$. As $\chi^S \in F$, we have that $S$ contains exactly one vertex from every vertex clique and exactly one vertex from every edge clique. Thus, if $ij \in S$, then $\ol{ii}$ and $\ol{ij}$ cannot be in $S$ since the edges $\{ij, \ol{ii}\}$ and $\{ij, \ol{jj}\}$ are in $H_n$. Then we have that $ii$ and $jj$ must be in $S$. Furthermore, if $ii$ and $jj$ are in $S$, then it must be the case that $ij \in S$. If this were not true, then either $\ol{ij}$, $\ul{ij}$, or $\oul{ij}$ would be in $S$, but all of these have an edge either to $ii$ or $jj$ in $H_n$, so this would contradict the fact that $S$ is a stable set. Therefore, we have that $ij \in S$ if and only if $ii$ and $jj$ are in $S$. Let $x = \chi^S$. Then $x_{ii} = 1$ if and only if $b_{ii} = 1$ by definition of $b_i$. Note that $(bb^T)_{ii} = b_{ii}$. Also, $x_{ij} = 1$ for $i < j$ if and only if $ii$ and $jj$ belong to $S$ as we argued above, which is equivalent to $b_{ii}b_{jj} =1$, by definition of $b$. Note that $(bb^T)_{ij} = (bb^T)_{ji} = b_{ii}b_{jj}$. Thus, we have that $\pi(x) = bb^T$, which is a vertex of $\COR(n)$, by Definition~(\ref{def:cor}). So $\pi(F) \subseteq \COR(n)$.
+
+Finally, we show $\COR(n) \subseteq \pi(F)$. Let $y = bb^T$ be a vertex of $\COR(n)$. We now want to construct an $x = \chi^S \in F$ such that $\pi(x) = y$. So let $S$ be the set that contains vertex $ii$ if $b_i = 1$ and vertex $\ol{ii}$ if $b_i = 0$. By the argument in the preceding paragraph showing $ij \in S$ if and only if $ii$ and $jj$ are both in $S$, it follows that $x$ is a vertex of $F$ such that $\pi(x) = y$. Therefore, $\COR(n) \subseteq \pi(F)$ and we have $\COR(n) = \pi(F)$, which is what we wanted to show.
+\end{proof}
+
+The following result is essentially a consequence of Lemma~(\ref{lem:stab-reduct}).
+
+\begin{theorem}\label{thm:stab-reduct}
+For all $n$, there exists a graph $G_n$ with $n$ vertices such that $\xc(\STAB(G_n)) = 2^{\Omega(\sqrt{n})}$.
+\end{theorem}
+\begin{proof}
+Recall from the proof of Lemma~(\ref{lem:stab-reduct}) that the size of $H_\ell$ was $2\ell + 4\binom{\ell}{2}$, where the $2\ell$ factor came from the vertex cliques and the $4\binom{\ell}{2}$ came from the edge cliques. Thus, this construction will not work for all $n$ if we use $H_n$. Thus, we proceed as follows. Construct $G_n$ from $H_\ell$ by adding $n - (2\ell + 4\binom{\ell}{2})$ isolated vertices where $\ell$ is the largest integer such that $n - (2\ell + 4\binom{\ell}{2})$ is nonnegative. Then $\STAB(H_\ell)$ is linearly isomorphic to a face of $\STAB(G_n)$ (specifically, the face that contains stable sets with vertices in $H_\ell$). Thus, it easily follows that $\xc(\STAB(G_n)) \ge \xc(\STAB(H_\ell))$ as they are linearly isomorphic.
+
+Then by Lemma~(\ref{lem:stab-reduct}), we know that $\STAB(H_\ell)$ contains a face that is an extension of $\COR(\ell)$, so by part (2) of Lemma~(\ref{lem:reduct}), we have that $\xc(\STAB(H_\ell)) \ge \xc(\COR(\ell))$. From Theorem~(\ref{theor:cut}), we know that $\xc(\COR(\ell)) = 2^{\Omega(\ell)}$. Finally, as $\ell$ is the largest integer such that $n - (2\ell + 4\binom{\ell}{2}) = n - 2\ell^2$, it follows that $n - 2\ell^2 \ge 0$ and $n - 2(\ell + 1)^2 < 0$, which implies $\ell = \Theta(\sqrt{n})$. Therefore, we have $2^{\Omega(\ell)} = 2^{\Omega(\sqrt{n})}$. Combining all of the previous statements in this paragraph, we have $\xc(\STAB(G_n)) = 2^{\Omega(\sqrt{n})}$.
+\end{proof}
 
 \subsection{Reduction from $\TSP(n)$}
 
