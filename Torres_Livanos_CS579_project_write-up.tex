@@ -109,14 +109,11 @@ Q = \left\{(x,y) \in \R^n \times \R^{n \times n} : y_{ij} \ge 0, \forall i, x_i 
 Then, we finally have that $P_{perm}^{(n)} = \{x \in \R^n : \exists y \in \R^{n \times n}, (x,y) \in Q\}$. It is clear that $Q$ has $n + n^2$ variables and a polynomial number of constraints. Thus, the extension complexity of the permutahedron is polynomial. 
 \end{example}
 
-\subsection{Yannakakis's Approach}\label{sec:Yannakakis}
+\subsection{Prior and Related Work}\label{sec:Yannakakis}
 
-\subsection{Prior Related Work}
-
+\vnote{Mention Yannakakis's results on the Symmetric TSP polytope and also mention a couple things about approximate EFs.}
 
 \section{Symmetric $\lang{TSP}$ Polytope}
-
-\mnote{For this section, all that remains is to state and prove factorization theorem.}
 
 In Yannakakis's paper introducing the idea of extension complexity~\cite{yannakakis}, he provided an important result that allowed us to reason about extension complexity in a seemingly tractable manner. We first need a couple of definitions to state Yannakakis's result.
 
@@ -148,11 +145,13 @@ The definition of extension is similar to that of an EF and this similarity is c
 \begin{theorem}[Factorization Theorem]\label{theor:factor}
 \end{theorem}
 
-\section{Connections to Communication Complexity}
+\mnote{For this section, all that remains is to state and prove factorization theorem.}
+
+\section{Lower Bounds on Extension Complexity}
 
 Using Yannakakis's factorization theorem, we know that if the slack matrix of a given polytope $P$ has nonnegative rank at least $r$, then every EF of $P$ has size at least $r$. Said differently, if we can lower bound the nonnegative rank of the slack matrix of $P$, then this will also be a lower bound for the extension complexity of $P$. Thus, our goal now is to find an approach to lower bounding the nonnegative rank of slack matrices for particular polytopes. 
 
-\subsection{Lower Bounds for Nonnegative Rank}\label{sec:theorem4}
+\subsection{Connections to Communication Complexity}\label{sec:theorem4}
 
 Before we state another result of Yannakakis that aids in lower bounding the nonnegative rank of matrices, we first give some useful definitions.
 
@@ -196,9 +195,11 @@ This theorem tells us that if we can show that the slack matrix of a given polyt
 
 %As a side note, is well-known that $\chi(M) \ge \rank(M)$~\cite{arora-borak}. Thus, Theorem~(\ref{theor:suppmat}) now gives an upper bound, implying $\rank_+(M) \ge \chi(M) \ge \rank(M)$.
 
-\subsection{Construction of Matrix to Lower Bound Nonnegative Rank}\label{sec:rec-cover}
+\subsection{A Matrix of Exponential Nonnegative Rank}\label{sec:rec-cover}
 
 \mnote{The title of this subsection is stilted and should be fixed if possible; I want to convey that we are constructing $M$ in this subsection because that is probably the most important part about this subsection, but I don't have a succinct, precise way of stating it}
+
+\vnote{How about "A Matrix of Exponential Nonnegative Rank"? Succinct and it conveys that we use rectangle cover as a lower bound on the nonnegative rank.}
 
 As stated at the beginning of this section, it is sufficient to lower bound the nonnegative rank of the slack matrix of a given polytope to give a lower bound on the extension complexity of a polytope. Theorem~(\ref{theor:suppmat}) shows us that we can lower bound the nonnegative rank of such a slack matrix by the min-cardinality monochromatic rectangle cover of the slack matrix. However, this still leaves us in a somewhat undesirable situation: for \emph{every} polytope we want to show has large extension complexity, we have to lower bound the corresponding slack matrix.
 
@@ -208,17 +209,19 @@ So then we need to start by lower bounding the nonnegative rank of the slack mat
 
 Let $M$ be a nonnegative, real $2^n \times 2^n$ matrix indexed by bit strings and defined as follows:
 \[
-M_{xy} = (1 - x^Ty)^2
+M_{xy} = {(1 - x^Ty)}^2
 \]
 for all $x,y \in \bits^n$. We also note that there is an equivalent definition of $M$:
 \[
 M_{xy} = 1 - \langle 2\diag(x) - xx^T, yy^T\rangle,
 \]
 where $\diag(x)$ is the $n \times n$ diagonal matrix with $x$ on its diagonal and $\langle\cdot, \cdot\rangle$ denotes the Frobenius inner product. To verify that this is an equivalent definition of $M$, we observe that
-\begin{multline*}
-1 - \langle 2\diag(x) - xx^T, yy^T\rangle = 1- 2\langle\diag(x), yy^T\rangle + \langle xx^T, yy^T\rangle \\= 1 - 2 \sum_{i=1}^n (\diag(x)yy^T)_{ii} + \sum_{i=1}^n (xx^Tyy^T)_{ii} 
-= 1 - 2 \sum_{i=1}^n x_{i} y_{i}^2 + \sum_{i=1}^n \sum_{j=1}^n x_iy_jx_iy_j =  1 - 2 x^Ty + (x^Ty)^2.
-\end{multline*}
+\begin{align*}
+1 - \langle 2\diag(x) - xx^T, yy^T\rangle & = 1 - 2\langle\diag(x), yy^T\rangle + \langle xx^T, yy^T\rangle \\
+& = 1 - 2 \sum_{i=1}^n (\diag(x)yy^T)_{ii} + \sum_{i=1}^n (xx^Tyy^T)_{ii}  \\
+& = 1 - 2 \sum_{i=1}^n x_{i} y_{i}^2 + \sum_{i=1}^n \sum_{j=1}^n x_iy_jx_iy_j \\
+& =  1 - 2 x^Ty + {(x^Ty)}^2 = {(1 - x^Ty)}^2
+\end{align*}
 
 De Wolf~\cite{de-wolf} showed the following theorem about the matrix $M$ constructed above.
 \begin{theorem}\label{theor:dewolf}
@@ -240,6 +243,8 @@ So we have from (1) that $\mu(A) = 3/4$. Then since we argued that $A = \bigcup_
 Note that Theorem~(\ref{theor:dewolf}) essentially states that the function $f : \bits^n \times \bits^n \to \bits$ corresponding to $\suppmat(M)$ has a lower bound of $\Omega(n)$ on its communication complexity.
 
 \mnote{should we elaborate further on this connection to communication complexity? If not, there isn't much comm. complexity in this section, so maybe we should change the name of the section to something more relevant?}
+
+\vnote{Yep, I agree, that's why I changed the section and subsection titles to something (possibly) more meaningful. Take a look and tell me what you think.}
 
 \section{Lower Bounds for $\CUT(n)$ Polytope}\label{sec:cut-polytope}
 
@@ -296,6 +301,8 @@ De Simone \cite{de-simone} showed the following Lemma, which the authors make us
 For all $n$, $\COR(n)$ is linearly isomorphic to $\CUT(n+1)$.
 \end{lemma}
 
+\vnote{Maybe add some intuition here if we actually find out why it holds.}
+
 We note that, for any $a \in {\{0, 1\}}^n$, the inequality
 \begin{equation}\label{eq:cor-valid}
 \left\langle 2 \; \text{diag}(a) - aa^T, x \right\rangle \leq 1
@@ -330,7 +337,7 @@ Theorem \ref{theor:cut} immediately implies the following.
 The extension complexity of $\CUT(n)$ is $2^{\Omega(n)}$.
 \end{corollary}
 
-\section{$\STAB(n)$ and $\TSP(n)$ Polytopes}
+\section{$\STAB(G)$ and $\TSP(n)$ Polytopes}
 
 It was made clear in the proof of Theorem~(\ref{theor:cut}) that the extension complexity of $\COR(n)$ is the same as the extension complexity of $\CUT(n+1)$. Thus, as we lower bounded the extension complexity of $\CUT(n+1)$ by $2^{\Omega(n)}$, we also have $\xc(\COR(n)) = 2^{\Omega(n)}$. As we noted in Section~(\ref{sec:rec-cover}), we now want to use the fact that $\xc(\COR(n)) = 2^{\Omega(n)}$ and ``reduce" other polytopes $Q$ to $\COR(n)$ to give a lower bound on $\xc(Q)$.
 
@@ -354,7 +361,7 @@ Next, we prove (2). Let $S_Q$ be the slack matrix of $Q$ and let $Q = \conv(\{v_
 Thus, Lemma~(\ref{lem:reduct}) gives an idea of how to do the reductions we have been alluding to: show that $\COR(n)$ is the face of a polytope $P$ and then $\xc(P) \ge \xc(\COR(n)) =2^{\Omega(n)}$.
 
 
-\subsection{Reduction from $\STAB(n)$}
+\subsection{Reduction from $\STAB(G)$}
 
 In this subsection, we will see the result of Fiorini~\cetal~\cite{fiorini} showing that the extension complexity of the stable set polytope is exponential. This result is a great example of the reductions introduced in the previous section work. There are two results in the subsection, but most of the work is in the first result showing that there exists a graph such that the stable set polytope corresponding to this graph contains a face that is an extension of $\COR(n)$. 
 
@@ -375,7 +382,7 @@ For every $n$, there exists a graph $H_n$ with $O(n^2)$ vertices such that $\STA
 \begin{proof}
 Here is an outline of the proof: we first construct $H_n$, then we designate the face $F$ of $\STAB(H_n)$ that will be an extension of $\COR(n)$, and finally we give the map $\pi$ showing that $F$ is indeed an extension of $\COR(n)$.
 
-First, we construct $H_n$. To do so, let $K_n$ be the complete graph on the vertices $[n]$. For an edge $ij$ in $K_n$ where $i < j$, label the edge $ij$. Now to construct $H_n$. The vertex set of $H_n$ is
+First, we construct $H_n$. To do so, let $K_n$ be the complete graph on the vertices $[n]$. For an edge $\{i, j\}$ in $K_n$ where $i < j$, label the edge $ij$. Now to construct $H_n$. The vertex set of $H_n$ is
 \[
 V = \{ii, \ol{ii} : i \in [n]\} \cup \{ij, \ol{ij}, \ul{ij}, \oul{ij}, : i,j \in [n], i < j\}.
 \]
