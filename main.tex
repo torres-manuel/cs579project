@@ -42,42 +42,52 @@
 
 \begin{frame}
 \frametitle{Main Question}
-Question: can we write a polynomial size linear program for $\lang{TSP}$?
+
+\pause
+\begin{itemize}
+\item Let's prove $\P = \NP$!
+\pause
+\item Idea: Can we write a polynomial-size LP (Linear Program) for an \NP-Complete problem (e.g. $\lang{TSP}$)?
+\end{itemize}
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Necessary Background}
 
-give definition of extended formulation, size of extended formulation, and extension complexity
-%\onslide<1-2>{
-%\begin{definition}
-%Let $P = \{x : Ax \le b\}$ and $Q = \{(x,y) : Bx + Cy \le d\}$. Then $Q$ is an \emph{extended formulation (EF)} of $P$ if $P = \{x : \exists y , (x,y) \in Q\}$. The size of an extended formulation is the number of facets of $Q$. 
-%\end{definition}
-%}
-%
-%\onslide<2>{
-%\begin{definition}
-%The \emph{extension complexity} of $P$, denoted $\xc(P)$, is the minimum size EF of $P$.
-%\end{definition}
-%}
+\pause
+\begin{definition}
+Let $P = \{x : Ax \leq b\}$ and $Q = \{(x,y) : Bx + Cy \leq d\}$. Then $Q$ is an \emph{extended formulation (EF)} of $P$ if and only if
+\[
+P = \{x : \exists y , (x,y) \in Q\}
+\]
+The size of an extended formulation is the number of facets (faces of maximal dimension) of $Q$.
+\end{definition}
+
+\pause
+\begin{definition}
+The \emph{extension complexity} of $P$, denoted $\xc(P)$, is the minimum size EF of $P$.
+\end{definition}
 
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Extended Formulations Can Help}
+%FIXME
 Here we give the example of the permutahedron
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Prior Work}
+
 \begin{itemize}
 \item state the result of yannakakis regarding the exponential lower bounds on symmetric LPs for TSP
 \item maybe mention work of EFs in combinatorial optimization
 \item (really, most of the work we want to talk about came after Fiorini et al, so we don't really have much prior work to talk about, mainly work that came after)
 \end{itemize}
+
 \end{frame}
 
 
