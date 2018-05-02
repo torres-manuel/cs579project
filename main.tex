@@ -48,6 +48,8 @@
 \item Let's prove $\P = \NP$!
 \pause
 \item Idea: Can we write a polynomial-size LP (Linear Program) for an \NP-Complete problem (e.g. $\lang{TSP}$)?
+\pause
+\item Another idea: Encode a problem as a polytope that is the convex hull of the vertices corresponding to the solutions of the problem.
 \end{itemize}
 \end{frame}
 
@@ -74,9 +76,21 @@ The \emph{extension complexity} of $P$, denoted $\xc(P)$, is the minimum size EF
 
 \begin{frame}
 \frametitle{Extended Formulations Can Help}
-%FIXME
-Here we give the example of the permutahedron
-maybe mention work of EFs in combinatorial optimization
+
+\pause
+\begin{itemize}
+\item There are polytopes that have exponential size (i.e. number of facets), but have an EF with polynomial size.
+\pause
+\begin{enumerate}
+\item The permutahedron polytope, which is the convex hull of the permutation group on $\{1, 2, \cdots, n\}$.
+\pause
+\item The spanning tree polytope.
+\pause
+\item The matching polytope for planar graphs.
+\end{enumerate}
+\pause
+\item Thus, even though these polytopes have exponential size, we can write a polynomial-size LP for them, through their EF.
+\end{itemize}
 \end{frame}
 
 
@@ -92,6 +106,11 @@ Every symmetric LP for TSP has extension complexity $2^{\Omega(n)}$. Thus, it al
 \begin{corollary}
 No symmetric LP can be used to solve TSP in polynomial time.
 \end{corollary}
+
+\pause
+\begin{itemize}
+\item Can we use an asymmetric LP to solve TSP in polynomial time?
+\end{itemize}
 
 \end{frame}
 
@@ -116,7 +135,7 @@ Let $A \in \R^{m \times d}$, $b \in \R^m$, and $V = \{v_1, \ldots, v_n\} \subset
 \frametitle{Yannakakis's Factorization Theorem}
 
 \pause
-\begin{theorem}[Factorization Theorem]
+\begin{theorem}[Factorization Theorem, Yannakakis '91]
 Let $P = \left\{ x \in \R^d \mid Ax \leq b \right\} = \conv(V)$ be a polytope, and $S$ be its slack matrix with respect to $Ax \leq b$ and $V$. Then
 \[
 \xc(P) = \nrank(S)
@@ -146,7 +165,7 @@ The {\em support matrix} of a matrix $M$ with nonnegative entries is
 \end{definition}
 
 \pause
-\begin{theorem}
+\begin{theorem}[Yannakakis, '91]
 Let $M$ be a matrix with nonnegative entries, and $\suppmat(M)$ its support matrix.
 Then, $\nrank(M)$ is lower bounded by the rectangle covering bound for $\suppmat(M)$.
 \end{theorem}
@@ -155,6 +174,17 @@ Then, $\nrank(M)$ is lower bounded by the rectangle covering bound for $\suppmat
 \begin{itemize}
 \item This provides a connection between $\xc(P)$ and communication complexity.
 \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Reminder: Rectangle Covers}
+
+\pause
+\begin{definition}[Rectangle Cover]
+Let $M \in \bits^{2^n \times 2^n}$ with indices corresponding to bit strings. A \emph{rectangle} is a subset of $\bits^n \times \bits^n$. We say that $R \subseteq \bits^n \times \bits^n$ is a \emph{$b$-monochromatic rectangle} for $f$ if $M_{xy} = b$ for all $(x,y) \in R$. We say that a set $\mathcal{R}$ of $b$-monochromatic rectangles is a \emph{$b$-rectangle cover} if $\{(x,y) \in \bits^n \times \bits^n : M_{xy} = b\} \subseteq \bigcup_{R \in \mathcal{R}} R$.
+\end{definition}
 
 \end{frame}
 
@@ -169,13 +199,6 @@ Let $M$ be a $2^n \times 2^n$ matrix, where each row (resp. column) is indexed b
 M_{ab} \coloneqq {\left(1 - a^Tb\right)}^2
 \]
 \end{definition}
-\end{frame}
-
-
-\begin{frame}
-\frametitle{Important Property of $M$}
-
-%FIXME: Maybe remind rectangle cover?
 
 \pause
 \begin{theorem}[De Wolf, '03]
@@ -186,12 +209,35 @@ Every $1$-monochromatic rectangle cover of $\suppmat(M)$ has size $2^{\Omega(n)}
 
 \begin{frame}
 \frametitle{$\TSP(n)$ Polytope}
-Definition of TSP Polytope
+
+\pause
+\begin{definition}[$\TSP$ Polytope]
+Let $K_n = (V_n, E_n)$ be the complete graph with $n$ vertices. The \emph{Traveling Salesman Problem polytope} $\TSP(n)$ is defined as the convex hull of the characteristic vectors of all $F \subseteq E_n$ such that $F$ is a Hamiltonian cycle of $K_n$. In other words,
+\[
+\TSP(n) \coloneqq \conv\left(\left\{\chi^F \in \R^{E_n} \mid F \subseteq E_n \text{ is a Hamiltonian cycle of $K_n$}\right\}\right).
+\]
+\end{definition}
+
+\pause
+\begin{itemize}
+\item Intuitively, the $\TSP(n)$ polytope is the polytope that has every Hamiltonian cycle of $K_n$ as a vertex.
+\end{itemize}
+
 \end{frame}
 
 \begin{frame}
 \frametitle{$\TSP(n)$ Polytope}
-Face lemma and lower bound Theorem
+
+\pause
+\begin{lemma}
+For every $n$, there exists a positive integer $q = O(n^2)$ such that $\COR(n)$ is contained in a face of $\TSP(q)$.
+\end{lemma}
+
+\pause
+\begin{theorem}
+The extension complexity of $\TSP(n)$ is $\xc\left(\TSP(n)\right) = 2^{\Omega\left(\sqrt{n}\right)}$.
+\end{theorem}
+
 \end{frame}
 
 \begin{frame}
@@ -209,7 +255,3 @@ Face lemma and lower bound Theorem
 \end{frame}
 
 \end{document}
-
-
-
-
