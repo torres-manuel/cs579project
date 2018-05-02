@@ -1,0 +1,199 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+
+
+\usepackage{comment}
+\usepackage{amsmath, amssymb}  
+\usepackage{amsthm}  
+\usepackage{mathtools}  
+\usepackage{complexity}
+
+\newcommand{\cetal}{\textit{et al.\@}}  % shortcut for etal to be used when no space is desired
+\newcommand{\etal}{\textit{et al.\@\ }}  % shortcut for etal to be used in regular text
+\newcommand{\nrank}{\operatorname{rank}_+}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\bits}{\{0,1\}}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\conv}{\operatorname{conv}}
+\newcommand{\suppmat}{\operatorname{suppmat}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\ul}[1]{\underline{#1}}
+\newcommand{\oul}[1]{\overline{\underline{#1}}}
+\newcommand{\xc}{\operatorname{xc}}
+\newcommand{\TSP}{\operatorname{TSP}}
+\newcommand{\STAB}{\operatorname{STAB}}
+\newcommand{\CUT}{\operatorname{CUT}}
+\newcommand{\COR}{\operatorname{COR}}
+\renewcommand{\R}{\mathbb{R}}
+
+\author[Livanos, Torres]{Vasilis Livanos and Manuel Torres}
+\title[Exp. Lower Bounds for Polytopes]{Exponential Lower Bounds for Polytopes in Combinatorial Optimization}
+\institute[UIUC]{University of Illinois at Urbana-Champaign}
+\date{May 2, 2018}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Main Question}
+Question: can we write a polynomial size linear program for $\lang{TSP}$?
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Necessary Background}
+
+give definition of extended formulation, size of extended formulation, and extension complexity
+%\onslide<1-2>{
+%\begin{definition}
+%Let $P = \{x : Ax \le b\}$ and $Q = \{(x,y) : Bx + Cy \le d\}$. Then $Q$ is an \emph{extended formulation (EF)} of $P$ if $P = \{x : \exists y , (x,y) \in Q\}$. The size of an extended formulation is the number of facets of $Q$. 
+%\end{definition}
+%}
+%
+%\onslide<2>{
+%\begin{definition}
+%The \emph{extension complexity} of $P$, denoted $\xc(P)$, is the minimum size EF of $P$.
+%\end{definition}
+%}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Extended Formulations Can Help}
+Here we give the example of the permutahedron
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Prior Work}
+\begin{itemize}
+\item state the result of yannakakis regarding the exponential lower bounds on symmetric LPs for TSP
+\item maybe mention work of EFs in combinatorial optimization
+\item (really, most of the work we want to talk about came after Fiorini et al, so we don't really have much prior work to talk about, mainly work that came after)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{More Technical Background}
+\begin{itemize}
+\item give definition of nonnegative rank,
+\item give definition of slack matrix
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Yannakakis's Factorization Theorem}
+give statement of theorem (maybe also have to give definition of an extension)
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Lower Bound on Nonnegative Rank}
+state theorem regarding the lower bound of nonnegative rank by the rectangle cover bound of the support matrix
+\end{frame}
+
+
+\begin{frame}
+\frametitle{A Matrix of Exponential Nonnegative Rank}
+give the definition of $M$ (and the equivalent characterization?)
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Important Property of $M$}
+give statement of theorem showing that every $1$-monochromatic rectangle cover of the support matrix of $M$ has exponential size
+\end{frame}
+
+
+\begin{frame}
+\frametitle{$\CUT(n)$ and $\COR(n)$ Polytopes}
+\begin{definition}[cut polytope]
+Let $G = (V,E)$ be a graph. Let $\delta(S)$ denote the cut of $S \subseteq V$. Then let $\chi^{\delta(X)} \in \R^{\abs{E}}$ such that
+\[
+\chi^{\delta(X)}_e =
+\begin{cases}
+1 & e \in \delta(X) \\
+0 & e \notin \delta(X)
+\end{cases}.
+\]
+Then $\CUT(n) \coloneqq \conv\left( \left\{ \chi^{\delta(X)} \in \R^{\abs{E}} \mid X \subseteq V_n \right\} \right)$
+\end{definition}
+\begin{definition}[correlation polytope]
+We have $\COR(n) \coloneqq \conv\left( \left\{ bb^T \in \R^{n \times n} \mid b \in {\{0, 1\}}^n \right\} \right)$
+\end{definition}
+\end{frame}
+
+\begin{frame}
+\frametitle{Connection Between $\CUT(n)$ and $\COR(n)$}
+define linearly isomorphic, state theorem showing $\COR(n)$ is linearly isomorphic $\CUT(n+1)$ (Question: why is it that two linearly isomorphic polytopes have some extension complexity?)
+
+\begin{definition}[linearly isomorphic polytopes]\label{def:lin-iso}
+Two polytopes $P \subseteq \R^n$ and $Q \subseteq \R^m$ are called \textit{linearly isomorphic} if there exists an invertible function $f : \R^n \to \R^m$ such that $f(P) = Q$.
+\end{definition}
+\begin{lemma}
+For all $n$, $\COR(n)$ is linearly isomorphic to $\CUT(n+1)$.
+\end{lemma}
+\end{frame}
+
+\begin{frame}
+\frametitle{$\CUT(n)$ has Exponential Extension Complexity}
+state theorem regarding exponential extension complexity of cut polytope
+
+\begin{theorem}
+There exists some constant $c > 0$ such that for all $n$,
+\[
+\xc(\CUT(n+1)) \geq 2^{c(n)}.
+\]
+\end{theorem}
+\end{frame}
+
+\begin{frame}
+\frametitle{$\CUT(n)$ has Exponential Extension Complexity (pf. sketch)}
+give a proof sketch of $\xc(\CUT(n)) = 2^{\Omega(n)}$
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Reductions}
+state lemma regarding reductions
+\end{frame}
+
+\begin{frame}
+\frametitle{$\STAB(n)$ Reduces to $\COR(n)$}
+give definition of $\STAB(n)$, state about reduction
+\end{frame}
+
+\begin{frame}
+\frametitle{Reduction from $\STAB(n)$ to $\COR(n)$}
+show the picture of the reduction
+\end{frame}
+
+\begin{frame}
+\frametitle{Extension Complexity of $\STAB(n)$ is $2^{\Omega(\sqrt{n})}$}
+state theorem about this and give proof sketch
+\end{frame}
+
+\begin{frame}
+\frametitle{Subsequent Work}
+state the work of Rhothvo\ss on matching polytope and showing a better bound on the TSP polytope
+\end{frame}
+
+\begin{frame}
+\frametitle{Subsequent Work (cont.)}
+state the work on approximate EFs
+\end{frame}
+
+\end{document}
+
+
+
+
