@@ -9,6 +9,7 @@
 \usepackage{amsthm}  
 \usepackage{mathtools}  
 \usepackage{complexity}
+\usepackage{xspace}
 
 \newtheorem{theorem}{\sc Theorem}
 \newtheorem{lemma}[theorem]{\sc Lemma}
@@ -23,7 +24,8 @@
 \newtheorem{remark}[theorem]{\sc Remark}
 \newtheorem{claim}[theorem]{\sc Claim}
 \newtheorem{observation}[theorem]{\sc Observation}
-
+\newenvironment{proofsketch}{%
+  \renewcommand{\proofname}{Proof Sketch}\proof}{\endproof}
 
 \usepackage{hyperref}  % used to hyperlink citations to bibliography
 \hypersetup{
@@ -51,6 +53,9 @@
 \newcommand{\CUT}{\operatorname{CUT}}
 \newcommand{\COR}{\operatorname{COR}}
 \renewcommand{\R}{\mathbb{R}}
+\def\problem#1{\textsc{#1}}
+\def\HAMPATH{\problem{HAMPATH}\xspace}
+\def\THREESAT{\problem{$3$SAT}\xspace}
 
 \newcommand{\vnote}[1]{{\color{magenta}\noindent\textbf{V: }\marginpar{****}\textit{{#1}}}}
 \newcommand{\mnote}[1]{{\color{blue}\noindent\textbf{M: }\marginpar{****}\textit{{#1}}}}
@@ -75,7 +80,7 @@ At a basic level, an EF of a polytope $P$ is a polytope $Q$ in a higher-dimensio
 The notion of an EF gives a direction towards answering the question posed at the beginning of this section. In particular, if one could show that the extension complexity of the $\lang{TSP}$ polytope is exponential, then there would not exist a polynomial-size LP for $\lang{TSP}$. More formally, we are interested in the following problem.
 
 \begin{probstate}
-Consider an instance to the Traveling Salesman Problem (TSP), where the input size, i.e. the number of cities is $n$. Let $TSP(n)$ be a polytope such that every point $x \in TSP(n)$ corresponds to a feasible solution to TSP, and vice-versa. Does there exist an extended formulation $Q$ of $TSP(n)$ of polynomial size, i.e. with a polynomial number of inequalities? In other words, is the extension complexity of $TSP(n)$ polynomial with respect to $n$?
+Consider an instance to the Traveling Salesman Problem ($\lang{TSP}$), where the input size, i.e. the number of cities is $n$. Let $\TSP(n)$ be a polytope such that every point $x \in \TSP(n)$ corresponds to a feasible solution to $\lang{TSP}$, and vice-versa. Does there exist an extended formulation $Q$ of $\TSP(n)$ of polynomial size, i.e. with a polynomial number of inequalities? In other words, is the extension complexity of $\TSP(n)$ polynomial with respect to $n$?
 \end{probstate}
 
 In Section~(\ref{sec:Yannakakis}), we will show interesting connections between extension complexity and communication complexity that will aid in settling this problem statement in the negative, by showing that the extension complexity of the $\lang{TSP}$ polytope is exponential with respect to the input size.
@@ -197,10 +202,6 @@ This theorem tells us that if we can show that the slack matrix of a given polyt
 
 \subsection{A Matrix of Exponential Nonnegative Rank}\label{sec:rec-cover}
 
-\mnote{The title of this subsection is stilted and should be fixed if possible; I want to convey that we are constructing $M$ in this subsection because that is probably the most important part about this subsection, but I don't have a succinct, precise way of stating it}
-
-\vnote{How about "A Matrix of Exponential Nonnegative Rank"? Succinct and it conveys that we use rectangle cover as a lower bound on the nonnegative rank.}
-
 As stated at the beginning of this section, it is sufficient to lower bound the nonnegative rank of the slack matrix of a given polytope to give a lower bound on the extension complexity of a polytope. Theorem~(\ref{theor:suppmat}) shows us that we can lower bound the nonnegative rank of such a slack matrix by the min-cardinality monochromatic rectangle cover of the slack matrix. However, this still leaves us in a somewhat undesirable situation: for \emph{every} polytope we want to show has large extension complexity, we have to lower bound the corresponding slack matrix.
 
 Fortunately, Fiorini \cetal~\cite{fiorini} gave a framework for reductions in this setting, which we describe formally in Section~(\ref{sec:reduct}). For now, we remark that these reductions will proceed as follows. First, we will lower bound the nonnegative rank of one slack matrix of a particular polytope $P$, implying a bound on the extension complexity of $P$. Then we will ``reduce" other polytopes to $P$ in order show these polytopes have at least the same extension complexity as $P$. 
@@ -242,10 +243,6 @@ So we have from (1) that $\mu(A) = 3/4$. Then since we argued that $A = \bigcup_
 
 Note that Theorem~(\ref{theor:dewolf}) essentially states that the function $f : \bits^n \times \bits^n \to \bits$ corresponding to $\suppmat(M)$ has a lower bound of $\Omega(n)$ on its communication complexity.
 
-\mnote{should we elaborate further on this connection to communication complexity? If not, there isn't much comm. complexity in this section, so maybe we should change the name of the section to something more relevant?}
-
-\vnote{Yep, I agree, that's why I changed the section and subsection titles to something (possibly) more meaningful. Take a look and tell me what you think.}
-
 \section{Lower Bounds for $\CUT(n)$ Polytope}\label{sec:cut-polytope}
 
 This section describes the first of the results in \cite{fiorini}, by showing that the $\CUT(n)$ polytope has exponential extension complexity. We briefly sketch the proof here, before proceeding more formally. The result essentially lies on a connection between the $\CUT(n)$ polytope and the correlation polytope, shown by \cite{de-simone}. The authors use Yannakakis's Theorem \ref{theor:factor} to relate the extension complexity of the correlation polytope with the nonnegative rank of a matrix, and then use Yannakakis's Theorem \ref{theor:suppmat} and De Wolf's Theorem \ref{theor:dewolf} to lower bound it by $2^{cn}$ for some positive constant $c$, implying an exponential lower bound on the extension complexity of the $\CUT(n)$ polytope.
@@ -282,7 +279,7 @@ Next, we provide a useful definition of the \textit{correlation polytope}.
 Let $b \in {\{0, 1\}}^n$. Then $b b^T$ is a rank-$1$ binary symmetric matrix. The convex hull of all rank-$1$ binary symmetric matrices is called
 the \textit{correlation (or Boolean quadric) polytope}, and is denoted by
 \[
-COR(n) \coloneqq \conv\left( \left\{ bb^T \in \R^{n \times n} \mid b \in {\{0, 1\}}^n \right\} \right)
+\COR(n) \coloneqq \conv\left( \left\{ bb^T \in \R^{n \times n} \mid b \in {\{0, 1\}}^n \right\} \right)
 \]
 \end{definition}
 
@@ -361,7 +358,7 @@ Next, we prove (2). Let $S_Q$ be the slack matrix of $Q$ and let $Q = \conv(\{v_
 Thus, Lemma~(\ref{lem:reduct}) gives an idea of how to do the reductions we have been alluding to: show that $\COR(n)$ is the face of a polytope $P$ and then $\xc(P) \ge \xc(\COR(n)) =2^{\Omega(n)}$.
 
 
-\subsection{Reduction from $\STAB(G)$}
+\subsection{Reduction from $\STAB(G)$}\label{sec:stab}
 
 In this subsection, we will see the result of Fiorini~\cetal~\cite{fiorini} showing that the extension complexity of the stable set polytope is exponential. This result is a great example of the reductions introduced in the previous section work. There are two results in the subsection, but most of the work is in the first result showing that there exists a graph such that the stable set polytope corresponding to this graph contains a face that is an extension of $\COR(n)$. 
 
@@ -370,7 +367,7 @@ Before we proceed with the results, we first need some definitions. First, when 
 \begin{definition}[Stable Set Polytope]
 The \emph{stable set polytope} $\STAB(G)$ is defined as the convex hull of the characteristic vectors of all stable sets in $G = (V, E)$. That is,
 \[
-\STAB(G) \coloneqq \conv\left(\left\{\chi^S \in \R^V | S \text{ is a stable set of $G$}\right\}\right).
+\STAB(G) \coloneqq \conv\left(\left\{\chi^S \in \R^V \mid S \text{ is a stable set of $G$}\right\}\right).
 \]
 \end{definition}
 
@@ -422,6 +419,46 @@ Then by Lemma~(\ref{lem:stab-reduct}), we know that $\STAB(H_\ell)$ contains a f
 
 \subsection{Reduction from $\TSP(n)$}
 
+In this subsection, we will sketch the result of Fiorini~\cetal~\cite{fiorini} showing that the extension complexity of the traveling salesman problem polytope is exponential. This is the main result of \cite{fiorini}, settling the extension complexity of $\TSP(n)$, and extending Yannakakis's result \cite{yannakakis}, by showing that any LP for $\lang{TSP}$, even an asymmetric one, has exponential size. For brevity, we will provide a brief sketch of the proof, as it is quite similar to the reduction presented in Section \ref{sec:stab}.
+
+We first provide a formal definition of $\TSP(n)$.
+
+\begin{definition}[$\TSP$ Polytope]
+Let $K_n = (V_n, E_n)$ be the complete graph with $n$ vertices. Recall that a characteristic vector for a set of edges $F \subseteq E_n$ is $\chi^F = \left(\chi^{e_1}, \cdots, \chi^{e_m}\right)$, where $\chi^e = 1$ if $e \in F$ and $\chi^e = 0$ if $e \notin F$, while $m = \frac{n(n-1)}{2}$. The \emph{Traveling Salesman Problem polytope} $\TSP(n)$ is defined as the convex hull of the characteristic vectors of all $F \subseteq E_n$ such that $F$ is a Hamiltonian cycle of $K_n$. In other words,
+\[
+\TSP(n) \coloneqq \conv\left(\left\{\chi^F \in \R^{E_n} \mid F \subseteq E_n \text{ is a Hamiltonian cycle of $K_n$}\right\}\right).
+\]
+\end{definition}
+
+Next, we state the main result of this section, as well as of \cite{fiorini}.
+
+\begin{lemma}\label{lem:tsp-reduct}
+For every $n$, there exists a positive integer $q = O(n^2)$ such that $\TSP(q)$ contains a face that is an extension of $\COR(n)$.
+\end{lemma}
+\begin{proofsketch}
+First, recall that
+\[
+\COR(n) \coloneqq \conv\left( \left\{ bb^T \in \R^{n \times n} \mid b \in {\{0, 1\}}^n \right\} \right)
+\]
+The proof follows the standard reduction of Sipser \cite{sipser} from $\THREESAT$ to $\HAMPATH$ very closely. The authors of \cite{fiorini} show the Lemma using the following steps
+\begin{enumerate}
+\item They first construct a $\THREESAT$ formula $\phi$ with $n^2$ variables, such that any satisfying assignment of the $n^2$ variables bijectively corresponds to the entries of a matrix $b b^T$, where $b \in {\{0, 1\}}^n$.
+
+\item Next, they create a directed graph $D$ with $O(n^2)$ vertices, such that every Hamiltonian cycle of $D$ surjectively corresponds to a satisfying assignment of $\phi$. Note however that a satisfying assignment of $\phi$ could be obtained by two different Hamiltonian cycles of $D$.
+
+\item In the next step, they create an undirected graph $G$ from $D$ again with $O(n^2)$ vertices, while ensuring that the mapping from satisfying assignments to Hamiltonian cycles is now bijective in $G$. Thus, every Hamiltonian cycle of $G$ bijectively corresponds to a matrix $b b^T$, where $b \in {\{0, 1\}}^n$, and thus to a vertex of $\COR(n)$. Critically, the graph $G$ created at this step is not a clique.
+
+\item Finally, let $l = |V(G)|$, and $\chi^E$ denote the characteristic vector of the of edges of $K_l$. Notice that, for any set of edges $F \subseteq E(G)$, we have that $\chi^F$ has a $0$ entry for all the non-edges in $G$. In other words, the only characteristic vectors that can express the set of edges of $G$ have a $0$ in all the entries corresponding to edges that are not in $G$. Thus, all such characteristic vectors denote a face of $\TSP(l)$. Let us denote this face by $F_G$. Any vertex of $\COR(n)$, and by convexity any point of $\COR(n)$, corresponds to a vertex of $\TSP(l)$ that lies in the face $F_G$. Since $l = O(n^2)$, and $\TSP(l)$ contains a face that is an extension of $\COR(n)$, the Lemma follows.
+\end{enumerate}
+\end{proofsketch}
+
+The final theorem of this section now follows immediately from Lemmas \ref{lem:tsp-reduct} and \ref{lem:reduct} and Theorem \ref{theor:cut}.
+
+\begin{theorem}
+The extension complexity of $\TSP(n)$ is $2^{\Omega\left(\sqrt{n}\right)}$.
+\end{theorem}
+
+We note here that using Theorem $6$ of \cite{Yannakakis}, once can get a $2^{\Omega\left(n^{\frac{1}{4}}\right)}$ lower bound for the extension complexity of the $\TSP(n)$ polytope, using Theorem \ref{thm:stab-reduct}, along with the fact that for every $p$-vertex graph $G$, $\STAB(G)$ is the linear projection of a face of $\TSP(n)$, where $n = O(p^2)$. The authors of \cite{fiorini} observe this fact, before strengthening the lower bound of the extension complexity of $\TSP(n)$.
 
 \section{Conclusion}
 
