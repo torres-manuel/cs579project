@@ -56,7 +56,7 @@
 \frametitle{Necessary Background}
 
 \pause
-\begin{definition}
+\begin{definition}[Extended Formulation]
 Let $P = \{x : Ax \leq b\}$ and $Q = \{(x,y) : Bx + Cy \leq d\}$. Then $Q$ is an \emph{extended formulation (EF)} of $P$ if and only if
 \[
 P = \{x : \exists y , (x,y) \in Q\}
@@ -65,7 +65,7 @@ The size of an extended formulation is the number of facets (faces of maximal di
 \end{definition}
 
 \pause
-\begin{definition}
+\begin{definition}[Extension Complexity]
 The \emph{extension complexity} of $P$, denoted $\xc(P)$, is the minimum size EF of $P$.
 \end{definition}
 
@@ -76,130 +76,136 @@ The \emph{extension complexity} of $P$, denoted $\xc(P)$, is the minimum size EF
 \frametitle{Extended Formulations Can Help}
 %FIXME
 Here we give the example of the permutahedron
+maybe mention work of EFs in combinatorial optimization
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Prior Work}
 
-\begin{itemize}
-\item state the result of yannakakis regarding the exponential lower bounds on symmetric LPs for TSP
-\item maybe mention work of EFs in combinatorial optimization
-\item (really, most of the work we want to talk about came after Fiorini et al, so we don't really have much prior work to talk about, mainly work that came after)
-\end{itemize}
+\pause
+\begin{theorem}[Yannakakis, '91]
+Every symmetric LP for TSP has extension complexity $2^{\Omega(n)}$. Thus, it also has an exponential number of inequalities.
+\end{theorem}
+
+\pause
+\begin{corollary}
+No symmetric LP can be used to solve TSP in polynomial time.
+\end{corollary}
 
 \end{frame}
 
 
 \begin{frame}
 \frametitle{More Technical Background}
-\begin{itemize}
-\item give definition of nonnegative rank,
-\item give definition of slack matrix
-\end{itemize}
+
+\pause
+\begin{definition}[Nonnegative Rank]
+Let $M \in \R_+^{m \times n}$. The \emph{nonnegative rank} of $M$ is defined as $\nrank(M) = \min\{r : M = TU, T \in \R_+^{m \times r}, U \in \R_+^{r \times n}\}$.
+\end{definition}
+
+\pause
+\begin{definition}[Slack Matrix]
+Let $A \in \R^{m \times d}$, $b \in \R^m$, and $V = \{v_1, \ldots, v_n\} \subseteq \R^d$. Let $P = \{x \in \R^d : Ax \le b\} = \conv(V)$. Then $S \in \R_+^{m\times n}$, where each entry is defined as $S_{ij} = b_i - A_i v_j$ with $i \in [m]$, $j \in [n]$, is the \emph{slack matrix} of $P$ with respect to $Ax \le b$ and $V$.
+\end{definition}
+
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Yannakakis's Factorization Theorem}
-give statement of theorem (maybe also have to give definition of an extension)
+
+\pause
+\begin{theorem}[Factorization Theorem]
+Let $P = \left\{ x \in \R^d \mid Ax \leq b \right\} = \conv(V)$ be a polytope, and $S$ be its slack matrix with respect to $Ax \leq b$ and $V$. Then
+\[
+\xc(P) = \nrank(S)
+\]
+\end{theorem}
+
+\pause
+\begin{itemize}
+\item If we want to lower bound $\xc(P)$, it suffices to lower bound $\nrank(S)$.
+\end{itemize}
+
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Lower Bound on Nonnegative Rank}
-state theorem regarding the lower bound of nonnegative rank by the rectangle cover bound of the support matrix
+
+\pause
+\begin{definition}[Support Matrix]
+The {\em support matrix} of a matrix $M$ with nonnegative entries is
+\[
+\suppmat(M)_{ij} = \begin{cases}
+0 & M_{ij} = 0 \\
+1 & M_{ij} \neq 0
+\end{cases}
+\]
+\end{definition}
+
+\pause
+\begin{theorem}
+Let $M$ be a matrix with nonnegative entries, and $\suppmat(M)$ its support matrix.
+Then, $\nrank(M)$ is lower bounded by the rectangle covering bound for $\suppmat(M)$.
+\end{theorem}
+
+\pause
+\begin{itemize}
+\item This provides a connection between $\xc(P)$ and communication complexity.
+\end{itemize}
+
 \end{frame}
 
 
 \begin{frame}
 \frametitle{A Matrix of Exponential Nonnegative Rank}
-give the definition of $M$ (and the equivalent characterization?)
+
+\pause
+\begin{definition}
+Let $M$ be a $2^n \times 2^n$ matrix, where each row (resp. column) is indexed by a $n$-bit string $a$ (resp. $b$), with
+\[
+M_{ab} \coloneqq {\left(1 - a^Tb\right)}^2
+\]
+\end{definition}
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Important Property of $M$}
-give statement of theorem showing that every $1$-monochromatic rectangle cover of the support matrix of $M$ has exponential size
-\end{frame}
 
+%FIXME: Maybe remind rectangle cover?
 
-\begin{frame}
-\frametitle{$\CUT(n)$ and $\COR(n)$ Polytopes}
-\begin{definition}[cut polytope]
-Let $G = (V,E)$ be a graph. Let $\delta(S)$ denote the cut of $S \subseteq V$. Then let $\chi^{\delta(X)} \in \R^{\abs{E}}$ such that
-\[
-\chi^{\delta(X)}_e =
-\begin{cases}
-1 & e \in \delta(X) \\
-0 & e \notin \delta(X)
-\end{cases}.
-\]
-Then $\CUT(n) \coloneqq \conv\left( \left\{ \chi^{\delta(X)} \in \R^{\abs{E}} \mid X \subseteq V_n \right\} \right)$
-\end{definition}
-\begin{definition}[correlation polytope]
-We have $\COR(n) \coloneqq \conv\left( \left\{ bb^T \in \R^{n \times n} \mid b \in {\{0, 1\}}^n \right\} \right)$
-\end{definition}
-\end{frame}
-
-\begin{frame}
-\frametitle{Connection Between $\CUT(n)$ and $\COR(n)$}
-define linearly isomorphic, state theorem showing $\COR(n)$ is linearly isomorphic $\CUT(n+1)$ (Question: why is it that two linearly isomorphic polytopes have some extension complexity?)
-
-\begin{definition}[linearly isomorphic polytopes]\label{def:lin-iso}
-Two polytopes $P \subseteq \R^n$ and $Q \subseteq \R^m$ are called \textit{linearly isomorphic} if there exists an invertible function $f : \R^n \to \R^m$ such that $f(P) = Q$.
-\end{definition}
-\begin{lemma}
-For all $n$, $\COR(n)$ is linearly isomorphic to $\CUT(n+1)$.
-\end{lemma}
-\end{frame}
-
-\begin{frame}
-\frametitle{$\CUT(n)$ has Exponential Extension Complexity}
-state theorem regarding exponential extension complexity of cut polytope
-
-\begin{theorem}
-There exists some constant $c > 0$ such that for all $n$,
-\[
-\xc(\CUT(n+1)) \geq 2^{c(n)}.
-\]
+\pause
+\begin{theorem}[De Wolf, '03]
+Every $1$-monochromatic rectangle cover of $\suppmat(M)$ has size $2^{\Omega(n)}$.
 \end{theorem}
-\end{frame}
-
-\begin{frame}
-\frametitle{$\CUT(n)$ has Exponential Extension Complexity (pf. sketch)}
-give a proof sketch of $\xc(\CUT(n)) = 2^{\Omega(n)}$
 
 \end{frame}
 
 \begin{frame}
-\frametitle{Reductions}
-state lemma regarding reductions
+\frametitle{$\TSP(n)$ Polytope}
+Definition of TSP Polytope
 \end{frame}
 
 \begin{frame}
-\frametitle{$\STAB(n)$ Reduces to $\COR(n)$}
-give definition of $\STAB(n)$, state about reduction
+\frametitle{$\TSP(n)$ Polytope}
+Face lemma and lower bound Theorem
 \end{frame}
 
 \begin{frame}
-\frametitle{Reduction from $\STAB(n)$ to $\COR(n)$}
-show the picture of the reduction
-\end{frame}
-
-\begin{frame}
-\frametitle{Extension Complexity of $\STAB(n)$ is $2^{\Omega(\sqrt{n})}$}
-state theorem about this and give proof sketch
-\end{frame}
-
-\begin{frame}
-\frametitle{Subsequent Work}
-state the work of Rhothvo\ss on matching polytope and showing a better bound on the TSP polytope
-\end{frame}
-
-\begin{frame}
-\frametitle{Subsequent Work (cont.)}
-state the work on approximate EFs
+\begin{center}
+\LARGE{QUESTIONS ?}
+\end{center}
+\begin{figure}
+        \centering
+        \begin{minipage}{.5\textwidth}
+            \centering
+            \includegraphics[width=.8\linewidth]{questions.png}
+        \end{minipage}%
+        
+\end{figure}
 \end{frame}
 
 \end{document}
