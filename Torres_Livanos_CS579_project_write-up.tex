@@ -10,6 +10,8 @@
 \usepackage{mathtools}  
 \usepackage{complexity}
 \usepackage{xspace}
+\usepackage{enumerate}
+\usepackage{bm}
 
 \newtheorem{theorem}{\sc Theorem}
 \newtheorem{lemma}[theorem]{\sc Lemma}
@@ -42,6 +44,7 @@
 \newcommand{\bits}{\{0,1\}}
 \newcommand{\abs}[1]{\left|#1\right|}
 \newcommand{\conv}{\operatorname{conv}}
+%\newcommand{\dim}{\operatorname{dim}}
 \newcommand{\suppmat}{\operatorname{suppmat}}
 \newcommand{\supp}{\operatorname{supp}}
 \newcommand{\ol}[1]{\overline{#1}}
@@ -132,15 +135,15 @@ In Yannakakis's paper introducing the idea of extension complexity~\cite{yannaka
 Let $M \in \R_+^{m \times n}$. The \emph{nonnegative rank} of $M$ is defined as $\nrank(M) = \min\{r : M = TU, T \in \R_+^{m \times r}, U \in \R_+^{r \times n}\}$.
 \end{definition}
 
-To gain intuition about the above definition, we remark that $\rank(M) \le \nrank(M)$, which follows from the fact the definition of $\rank(M)$ is the same except $T$ and $U$ are allowed to be negative. More importantly for this exposition, there is an equivalent characterization of nonnegative rank that proves useful later on. Another important fact that we will use later on is that $\nrank(M)$ is equal to the minimum $r$ such that $M$ can be written as the sum of $r$ nonnegative rank-1 matrices. Formally, we have that 
+To gain intuition about the above definition, we remark that $\rank(M) \le \nrank(M)$, which follows from the fact the definition of $\rank(M)$ is the same except $T$ and $U$ are allowed to have negative entries. More importantly for this exposition, there is an equivalent characterization of nonnegative rank that proves useful later on; namely, $\nrank(M)$ is equal to the minimum $r$ such that $M$ can be written as the sum of $r$ nonnegative rank-1 matrices. Formally, we have that 
 \[
-\nrank(M) = \min\{r : M =\sum_{i=1}^r U_i, U_i \in \R_+^{m \times n}, \rank(U_i) = 1\}
+\nrank(M) = \min\left\{r : M =\sum_{i=1}^r U_i, U_i \in \R_+^{m \times n}, \rank(U_i) = 1\right\}
 \]
 
-Next, we introduce the so-called \emph{slack matrix} of a polytope and then will show the connection between slack matrices and nonnegative rank.
+Next, we introduce the \emph{slack matrix} of a polytope, before showing the connection between slack matrices and nonnegative rank.
 
 \begin{definition}[Slack Matrix]
-Let $A \in \R^{m \times d}$, $b \in \R^m$, and $V = \{v_1, \ldots, v_n\} \subseteq \R^d$. Let $P = \{x \in \R^d : Ax \le b\} = \conv(V)$. Then $S \in \R_+^{m\times n}$ defined by $S_{ij} = b_i - A_i v_j$ with $i \in [m]$, $j \in [n]$ is the \emph{slack matrix} of $P$ with respect to $Ax \le b$ and $V$.
+Let $A \in \R^{m \times d}$, $b \in \R^m$, and $V = \{v_1, \ldots, v_n\} \subseteq \R^d$. Let $P = \{x \in \R^d : Ax \le b\} = \conv(V)$. Then $S \in \R_+^{m\times n}$, where each entry is defined as $S_{ij} = b_i - A_i v_j$ with $i \in [m]$, $j \in [n]$, is the \emph{slack matrix} of $P$ with respect to $Ax \le b$ and $V$.
 \end{definition}
 
 Intuitively, the slack matrix of $P$ with respect to $Ax \le b$ and $V$ encodes how much ``slack" there is between every vertex in $V$ and a constraint. That is, $S_{ij}$ is essentially the slack between the $i^{th}$ constraint, $b_i$, and the $j^{th}$ vertex, $v_j$.
@@ -151,12 +154,38 @@ We only need one more definition before we can state Yannakakis's factorization 
 An \emph{extension} of $P \subseteq \R^n$ is a polytope $Q \in \R^m$ such that there is a linear map $f : \R^m \to \R^n$ such that $f(Q) = P$. We say that the \emph{size} of $Q$ is the number of faces, or facets, it has.
 \end{definition}
 
-The definition of extension is similar to that of an EF and this similarity is characterized in Theorem~(\ref{theor:factor}).
+The definition of extension is similar to that of an EF and this similarity is characterized in Theorem \ref{theor:factor}. We only provide a brief sketch of the proof of Theorem \ref{theor:factor}, as the proof is a bit technical, and does not lend deeper intuition to the reader.
 
 \begin{theorem}[Factorization Theorem]\label{theor:factor}
+Let $P = \left\{x \in \R^d \mid Ax \leq b\right\} = \conv(V)$ be a polytope with $\dim(P) \geq 1$, and let $S$ denote the slack matrix of $P$ with respect to $Ax \leq b$ and $V$. Then, the following are equivalent for all positive integers $r$:
+\begin{enumerate}[(i)]
+\item $S$ has nonnegative rank at most $r$.
+\item $P$ has an extension $Q$ of size at most $r$; in other words $Q$ has at most $r$ facets.
+\item $P$ has an EF of size at most $r$; in other words there exists an EF of $P$ with at most $r$ inequalities.
+\end{enumerate}
 \end{theorem}
+\begin{proofsketch}
+First, we show that $(ii)$ implies $(iii)$. Clearly, since $Q$ is an extension of $P$ with $r^* \leq r$ facets, we can write an EF of $P$, where $(x, y)$ would satisfy the EF if and only if $(x, y) \in Q$. Since $Q$ has $r^*$ facets, it follows that the number of inequalities of this EF is $r^* \leq r$.
 
-\mnote{For this section, all that remains is to state and prove factorization theorem.}
+Next, we sketch the proof that $(i)$ implies $(ii)$. Let $r^* \leq r$ be the rank of a factorization of the slack matrix $S = TU$ in nonnegative matrices. Consider the polytope
+\[
+Q \coloneqq \left\{(x, y) \in \R^{d+r^*} \mid Ax + Ty = b, y \geq \bm{0}\right\}
+\]
+Since $Ty \geq \bm{0}$, $Ax \leq b$ for all $x$, and thus the projection of $Q$ onto the $x$-space is $P$. Furthermore, for each vertex $v_j \in V$, we have $(v_j, U^j) \in Q$, since
+\[
+Av_j + TU^j = Av_j + (b - Av_j) = b
+\]
+and $U^j \geq \bm{0}$. Thus, $Q$ is an extension of $P$. Notice that the number of facets of $Q$ is $r^*$, equal to the number of variables $y$ introduced in the extension, and thus $Q$ has size at most $r$.
+
+Finally, we briefly outline the proof that $(iii)$ implies $(i)$. Consider an EF of $P$, of size $r^* \leq r$. Let $Q$ be the polytope that denotes the set of solutions to the EF. Then, since $Ax \leq b$ is equivalent to tthe EF being satisfiable, $Ax \leq b$ is a valid inequality for $Q$. Therefore, every row in the slack matrix of $Q$, $S_Q$, can be written as a nonnegative combination of the first $r$ rows, which correspond to $ax \leq b$. Thus, $\nrank(S_Q) \leq r$. If we consider only the submatrix $S$ of $S_Q$ that corresponds to $Ax \leq b$, that submatrix has nonnegative rank $\nrank(S) \leq \nrank(S_Q) \leq r$.
+\end{proofsketch}
+
+We note here that the factorization theroem can be written succinctly as
+\[
+\xc(P) = \nrank(S)
+\]
+
+The idea behind the factorization theorem is to correlate the extension complexity of a polytope with a much more tangible notion, such as the nonnegative rank of its slack matrix. Thus, one can now focus on lower bounding the nonnegative rank of the slack matrix of a polytope, to obtain meaningful lower bounds on its extension complexity.
 
 \section{Lower Bounds on Extension Complexity}
 
