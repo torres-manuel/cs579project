@@ -180,7 +180,7 @@ and $U^j \geq \bm{0}$. Thus, $Q$ is an extension of $P$. Notice that the number 
 Finally, we briefly outline the proof that $(iii)$ implies $(i)$. Consider an EF of $P$, of size $r^* \leq r$. Let $Q$ be the polytope that denotes the set of solutions to the EF. Then, since $Ax \leq b$ is equivalent to tthe EF being satisfiable, $Ax \leq b$ is a valid inequality for $Q$. Therefore, every row in the slack matrix of $Q$, $S_Q$, can be written as a nonnegative combination of the first $r$ rows, which correspond to $ax \leq b$. Thus, $\nrank(S_Q) \leq r$. If we consider only the submatrix $S$ of $S_Q$ that corresponds to $Ax \leq b$, that submatrix has nonnegative rank $\nrank(S) \leq \nrank(S_Q) \leq r$.
 \end{proofsketch}
 
-We note here that the factorization theroem can be written succinctly as
+We note here that the factorization theorem can be written succinctly as
 \[
 \xc(P) = \nrank(S)
 \]
@@ -300,7 +300,7 @@ The \textit{cut polytope} $\CUT(n)$ is defined as the convex hull of the charact
 \]
 \end{definition}
 
-Next, we define the notion of \textit{linear isomorphism} of two polytopes.
+Next, we define the notion of \textit{linearly isomorphic} polytopes. 
 
 \begin{definition}[Linearly Isomorphic Polytopes]\label{def:lin-iso}
 Two polytopes $P \subseteq \R^n$ and $Q \subseteq \R^m$ are called \textit{linearly isomorphic} if there exists an invertible matrix $M \in \R^{n \times m}$ such that for every $x \in P$, $y = Mx \in Q$. Equivalently, for every $y \in Q$, $x = M^{-1}y \in P$.
@@ -323,7 +323,7 @@ We are now ready to show the main result of this section, that provides a lower 
 \begin{theorem}\label{theor:cut}
 There exists some constant $c > 0$ such that for all $n$,
 \[
-\xc(\CUT(n+1)) \geq 2^{c(n)}
+\xc(\CUT(n+1)) \geq 2^{cn}
 \]
 \end{theorem}
 \begin{proof}
@@ -457,7 +457,7 @@ In this subsection, we will sketch the result of Fiorini~\cetal~\cite{fiorini} s
 We first provide a formal definition of $\TSP(n)$.
 
 \begin{definition}[$\TSP$ Polytope]
-Let $K_n = (V_n, E_n)$ be the complete graph with $n$ vertices. Recall that a characteristic vector for a set of edges $F \subseteq E_n$ is $\chi^F = \left(\chi^{e_1}, \cdots, \chi^{e_m}\right)$, where $\chi^e = 1$ if $e \in F$ and $\chi^e = 0$ if $e \notin F$, while $m = \frac{n(n-1)}{2}$. The \emph{Traveling Salesman Problem polytope} $\TSP(n)$ is defined as the convex hull of the characteristic vectors of all $F \subseteq E_n$ such that $F$ is a Hamiltonian cycle of $K_n$. In other words,
+Let $K_n = (V_n, E_n)$ be the complete graph with $n$ vertices. Recall that a characteristic vector for a set of edges $F \subseteq E_n$ is $\chi^F = \left(\chi_{e_1}, \ldots, \chi_{e_m}\right)$, where $\chi_e = 1$ if $e \in F$ and $\chi_e = 0$ if $e \notin F$, while $m = \frac{n(n-1)}{2}$. The \emph{Traveling Salesman Problem polytope} $\TSP(n)$ is defined as the convex hull of the characteristic vectors of all $F \subseteq E_n$ such that $F$ is a Hamiltonian cycle of $K_n$. In other words,
 \[
 \TSP(n) \coloneqq \conv\left(\left\{\chi^F \in \R^{E_n} \mid F \subseteq E_n \text{ is a Hamiltonian cycle of $K_n$}\right\}\right).
 \]
