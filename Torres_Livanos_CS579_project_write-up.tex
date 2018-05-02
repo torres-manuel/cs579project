@@ -85,6 +85,8 @@ Consider an instance to the Traveling Salesman Problem ($\lang{TSP}$), where the
 
 In Section~(\ref{sec:Yannakakis}), we will show interesting connections between extension complexity and communication complexity that will aid in settling this problem statement in the negative, by showing that the extension complexity of the $\lang{TSP}$ polytope is exponential with respect to the input size.
 
+We should also note that there is no reason why we could not consider a different $\NP$-complete problem. It is also of interest to determine whether or not there exists polynomial-size LPs for any other $\NP$-complete problems, as this would also resolve the $\P$ vs.\ $\NP$ question. Nevertheless, as a way of concretely stating the problem, we continue with our focus on $\TSP$.
+
 \subsection{The Utility of Extended Formulations}\label{sec:utility-EF}
 
 In this subsection, we give an example of an extended formulation of a particular polytope that reduces the number of constraints from exponential to polynomial and only increases the number of variables by a polynomial factor. This example was given in the lecture notes by Vondr\'ak~\cite{vondrak-class}.
@@ -116,9 +118,13 @@ Then, we finally have that $P_{perm}^{(n)} = \{x \in \R^n : \exists y \in \R^{n 
 
 \subsection{Prior and Related Work}\label{sec:Yannakakis}
 
-\vnote{Mention Yannakakis's results on the Symmetric TSP polytope and also mention a couple things about approximate EFs.}
+As noted at the beginning of the report, it is possible to resolve the $\P$ vs.\ $\NP$ question by constructing a polynomial-size LP for an $\NP$-complete problem. In 1988, Yannakakis~\cite{yannakakis} showed that every symmetric LP for $\TSP$ must be exponentially large with respect to the input size. Note that a symmetric LP for $\TSP$ is one in which a permutation of the cities corresponds to a permutation of the variables in the LP for which the constraints of the LP do not change. This was a significant development in showing that one cannot create a polynomial-size LP for $\TSP$, but it of course did not fully resolve the case for asymmetric LPs. Fiorini~\cetal~\cite{fiorini} show that asymmetry does not help: every LP for $\TSP$ requires at least exponential size with respect to the input size. 
 
-\section{Symmetric $\lang{TSP}$ Polytope}
+Even though it was Fiorini~\etal to finally resolve the question for $\TSP$, we should not overlook the contribution by Yannakakis. In fact, the connections Yannakakis makes between nonnegative rank (to be defined in Section~(\ref{sec:symmetric-tsp})) and extension complexity are instrumental in the work of Fiorini~\etal (for example, see Theorem~(\ref{theor:factor})). We will explore these connections in Section~(\ref{sec:symmetric-tsp}).
+
+Extended formulations have also played an important role in combinatorial optimization. A line of work in this area is to determine which polytopes that arise in various optimization problems yield a polynomial-size LP. For example, it is well-known that the spanning tree polytope has polynomial extension complexity, even though the standard formulation of the polytope of Edmonds~\cite{edmonds} has an exponential number of constraints. Another example of a polytope whose standard formulation has an exponential number of constraints but polynomial extension complexity is the matching polytope on planar graphs~\cite{barahona}. There has been so much work done in the area of extended formulations being used in combinatorial optimization that there are multiple surveys on the topic~\cite{conforti,vanderbeck,kaibel}. In these surveys, they also talk about more paradigmatic uses of extended formulations such as lift-and-project algorithms~\cite{balas} and Lov{\'a}sz-Schrijver closures~\cite{lovasz}.
+
+\section{Symmetric $\lang{TSP}$ Polytope}\label{sec:symmetric-tsp}
 
 In Yannakakis's paper introducing the idea of extension complexity~\cite{yannakakis}, he provided an important result that allowed us to reason about extension complexity in a seemingly tractable manner. We first need a couple of definitions to state Yannakakis's result.
 
@@ -458,9 +464,13 @@ The final theorem of this section now follows immediately from Lemmas \ref{lem:t
 The extension complexity of $\TSP(n)$ is $2^{\Omega\left(\sqrt{n}\right)}$.
 \end{theorem}
 
-We note here that using Theorem $6$ of \cite{Yannakakis}, once can get a $2^{\Omega\left(n^{\frac{1}{4}}\right)}$ lower bound for the extension complexity of the $\TSP(n)$ polytope, using Theorem \ref{thm:stab-reduct}, along with the fact that for every $p$-vertex graph $G$, $\STAB(G)$ is the linear projection of a face of $\TSP(n)$, where $n = O(p^2)$. The authors of \cite{fiorini} observe this fact, before strengthening the lower bound of the extension complexity of $\TSP(n)$.
+We note here that using Theorem $6$ of \cite{yannakakis}, once can get a $2^{\Omega\left(n^{\frac{1}{4}}\right)}$ lower bound for the extension complexity of the $\TSP(n)$ polytope, using Theorem \ref{thm:stab-reduct}, along with the fact that for every $p$-vertex graph $G$, $\STAB(G)$ is the linear projection of a face of $\TSP(n)$, where $n = O(p^2)$. The authors of \cite{fiorini} observe this fact, before strengthening the lower bound of the extension complexity of $\TSP(n)$.
 
 \section{Conclusion}
+
+In our concluding remarks, we first want to make one note of some interesting work that was done after the publication of Fiorini~\cetal~\cite{fiorini}. One remarkable result is of Rhothvo\ss~\cite{rothvoss2017}, who showed that the matching polytope has extension complexity $2^{\Omega(n)}$, which was the first result of a polytope that can be optimized over in polynomial time having exponential extension complexity.
+
+There was also other interesting work in the area of approximate formulations after the publication of Fiorini~\cetal~\cite{fiorini}. For example, the work of Braun~\cetal~\cite{braun} shows that linear program approximation Max-Clique to within a factor of $n^{1/2-\epsilon}$ need size at least $2^{\Omega(n^\epsilon)}$. Another interesting result in this vein is that of Chan~\cetal~\cite{chan}, who show that every $(2-\epsilon)$ approximation linear EF for Max-Cut has $n^{\Omega(\log n / \log \log n)}$ size. Note that for the results of Chan~\cetal, the results are regarding linear EFs, which should be contrasted with the fact that Goemans and Williamson's classical result for Max-Cut uses a quadratic program. All of these results do not immediately rule out polynomial-time algorithms for these problems as one could still potentially optimize over exponentially-large LPs using the ellipsoid method combined with a separation oracle. Nevertheless, these results do give some insight into the geometric complexity of describing such polytopes.
 
 \bibliographystyle{unsrt}
 \bibliography{refs}
