@@ -28,6 +28,10 @@
 \newcommand{\COR}{\operatorname{COR}}
 \renewcommand{\R}{\mathbb{R}}
 
+\newenvironment{proofsketch}{%
+  \renewcommand{\proofname}{Proof Sketch}\proof}{\endproof}
+
+
 \author[Livanos, Torres]{Vasilis Livanos and Manuel Torres}
 \title[Exp. Lower Bounds for Polytopes]{Exponential Lower Bounds for Polytopes in Combinatorial Optimization}
 \institute[UIUC]{University of Illinois at Urbana-Champaign}
@@ -82,7 +86,7 @@ The \emph{extension complexity} of $P$, denoted $\xc(P)$, is the minimum size EF
 \item There are polytopes that have exponential size (i.e. number of facets), but have an EF with polynomial size.
 \pause
 \begin{enumerate}
-\item The permutahedron polytope, which is the convex hull of the permutation group on $\{1, 2, \cdots, n\}$.
+\item The permutahedron polytope, which is the convex hull of the permutation group on $\{1, 2, \ldots, n\}$.
 \pause
 \item The spanning tree polytope.
 \pause
@@ -207,6 +211,10 @@ Every $1$-monochromatic rectangle cover of $\suppmat(M)$ has size $2^{\Omega(n)}
 
 \end{frame}
 
+
+\input{manuels_slides}
+
+
 \begin{frame}
 \frametitle{$\TSP(n)$ Polytope}
 
@@ -239,6 +247,8 @@ The extension complexity of $\TSP(n)$ is $\xc\left(\TSP(n)\right) = 2^{\Omega\le
 \end{theorem}
 
 \end{frame}
+
+\input{subsequent_work_slides}
 
 \begin{frame}
 \begin{center}
